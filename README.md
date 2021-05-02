@@ -1,6 +1,8 @@
 
 # geo-dbscan 🗺️
 
+[![CI](https://github.com/rgrannell1/geo-dbscan/actions/workflows/ci.yaml/badge.svg)](https://github.com/rgrannell1/geo-dbscan/actions/workflows/ci.yaml)
+
 Cluster geographical location-data.
 
 ```ts
