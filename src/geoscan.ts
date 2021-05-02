@@ -1,5 +1,6 @@
 
 import haversine from 'haversine-distance'
+import Geo from 'geo-nearby'
 
 import {
   Location,
@@ -16,6 +17,7 @@ export class GeoDBScan <T> {
   getLocation: (point: T) => Location
   epsilon: number
   minPoints: number
+  geo: any
 
   constructor (opts: GeoDBScanOpts<T>) {
     this.getLocation = opts.getLocation
@@ -33,7 +35,7 @@ export class GeoDBScan <T> {
    *   `epsilon` km of another point
    */
   withinDistance (location0: Location, location1: Location) {
-    return haversine(location0, location1) < (this.epsilon * 1000)
+    return haversine(location0, location1) < (this.epsilon * 1000) // km distance
   }
 
   /**
@@ -44,19 +46,26 @@ export class GeoDBScan <T> {
   nearby (data: T[], point: T) {
     const pointLocation = this.getLocation(point)
 
+    const nearby = this.geo.nearBy(pointLocation.latitude, pointLocation.longitude, this.epsilon * 1000)
     const neighbours:number[] = []
 
-    for (let idx = 0; idx < data.length; ++idx) {
-      const candidate = data[idx]
-
-      const candidateLocation = this.getLocation(candidate)
-
-      if (this.withinDistance(pointLocation, candidateLocation)) {
-        neighbours.push(idx)
-      }
+    for (const { i } of nearby) {
+      neighbours.push(i)
     }
 
     return neighbours
+  }
+
+  asGeo (data: T[]) {
+    const indexable = []
+    for (let idx = 0; idx < data.length; ++idx) {
+      const { latitude, longitude } = this.getLocation(data[idx])
+      indexable.push([latitude, longitude, idx])
+    }
+
+    return new Geo(Geo.createCompactSet(indexable), {
+      sorted: true
+    })
   }
 
   /**
@@ -94,9 +103,25 @@ export class GeoDBScan <T> {
   /**
    * Cluster a dataset containing longitude-latitude data by location.
    *
+   * @param {T[]} data-points to cluster
+   *
    * @returns object
    */
   fit (data: T[]): ClusterData <T> {
+    if (data.length === 0) {
+      return {
+        stats: {
+          clusterCount: 0,
+          count: 0,
+          clusteredCount: 0,
+          noiseCount: 0
+        },
+        clusters: { }
+      }
+    }
+
+    this.geo = this.asGeo(data)
+
     let clusterId = 0
     const labels = []
     for (let idx = 0; idx < data.length; ++idx) {

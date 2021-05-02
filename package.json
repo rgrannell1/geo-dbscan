@@ -9,17 +9,18 @@
   "scripts": {
     "tsc": "tsc",
     "test": "npm run tsc && node dist/test/index.js",
+    "benchmark": "npm run tsc && node dist/benchmark/geoscan.js",
     "perf:clean": "rm isolate* || echo ''",
     "perf:measure": "node --prof dist/benchmark/geoscan.js",
     "perf:show": "node --prof-process --preprocess -j isolate*.log | node_modules/.bin/flamebearer",
     "perf": "npm run perf:clean; npm run perf:measure; npm run perf:show"
   },
   "dependencies": {
-    "@types/rbush": "^3.0.0",
     "geo-nearby": "^2.0.1",
     "haversine-distance": "^1.2.1"
   },
   "devDependencies": {
+    "flamebearer": "^1.1.3",
     "@rgrannell/revexp": "^1.1.0",
     "atypical": "github:rgrannell1/atypical",
     "c8": "^7.7.1",
