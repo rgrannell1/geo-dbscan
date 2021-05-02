@@ -1,28 +1,16 @@
 
 import haversine from 'haversine-distance'
 
-interface Location {
-  latitude: number
-  longitude: number
-}
+import {
+  Location,
+  GeoDBScanOpts,
+  GrowClusterOpts,
+  ClusterData
+} from './types'
 
 /**
- * Constructor options for Geo DBScan
+ *
  */
-interface GeoDBScanOpts <T> {
-  getLocation: (point: T) => Location
-  epsilon: number
-  minPoints: number
-}
-
-interface GrowClusterOpts <T> {
-  data: T[]
-  labels: number[]
-  pointIndex: number
-  neighbours: number[]
-  clusterId: number
-}
-
 export class GeoDBScan <T> {
   data: T[]
   getLocation: (point: T) => Location
@@ -35,6 +23,15 @@ export class GeoDBScan <T> {
     this.minPoints = opts.minPoints
   }
 
+  /**
+   * Find points within a radius of another point
+   *
+   * @param location0 a longitude-latitude-object
+   * @param location1 a longitude-latitude-object
+   *
+   * @returns a boolean indicative whether a point is within
+   *   `epsilon` km of another point
+   */
   withinDistance (location0: Location, location1: Location) {
     return haversine(location0, location1) < (this.epsilon * 1000)
   }
@@ -95,10 +92,11 @@ export class GeoDBScan <T> {
   }
 
   /**
+   * Cluster a dataset containing longitude-latitude data by location.
    *
    * @returns object
    */
-  fit (data: T[]) {
+  fit (data: T[]): ClusterData {
     let clusterId = 0
     const labels = []
     for (let idx = 0; idx < data.length; ++idx) {
@@ -126,11 +124,16 @@ export class GeoDBScan <T> {
       }
     }
 
-    const cluster: Array<{
-      id: number,
-      noise: boolean
-    }> = []
+    const noiseCount = labels.filter(data => data === -1).length
+    const clusteredCount = labels.filter(data => data !== -1).length
 
-    return cluster
+    return {
+      stats: {
+        count: data.length,
+        clusteredCount,
+        noiseCount
+      },
+      clusters: []
+    }
   }
 }

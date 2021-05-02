@@ -11,12 +11,12 @@
     "test": "npm run tsc & node dist/test/index.js"
   },
   "dependencies": {
-    "haversine-distance": "^1.2.1",
-    "typescript": "^4.2.4"
+    "haversine-distance": "^1.2.1"
   },
   "devDependencies": {
     "@rgrannell/revexp": "^1.1.0",
     "atypical": "github:rgrannell1/atypical",
-    "c8": "^7.7.1"
+    "c8": "^7.7.1",
+    "typescript": "^4.2.4"
   }
 }

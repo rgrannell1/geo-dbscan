@@ -1,9 +1,11 @@
 
 import { Theory } from 'atypical'
 
-import geoscanHypotheses from '../src/geoscan.test.js'
+import geoscanHypotheses from '../src/geoscan.spec.js'
 
-const theory = new Theory({ description: 'all geoscan hypotheses hold' })
+const theory = new Theory({
+  description: 'all geoscan hypotheses hold'
+})
 
 theory
   .expectAll({
