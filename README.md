@@ -104,11 +104,11 @@ These values have to be chosen with knowledge of the data-set and application.
 128: took 0 seconds
 256: took 0 seconds
 512: took 0 seconds
-1,024: took 0 seconds
-2,048: took 0 seconds
-4,096: took 3 seconds
-8,192: took 28 seconds
-16,384: took 223 seconds
+1024: took 0 seconds
+2048: took 0 seconds
+4096: took 4 seconds
+8192: took 38 seconds
+16384: took 283 seconds
 ```
 
 ## API
