@@ -9,7 +9,7 @@
   "scripts": {
     "tsc": "tsc",
     "test": "npm run tsc && node dist/test/index.js",
-    "benchmark": "npm run tsc && node dist/benchmark/geoscan.js",
+    "benchmark": "npm run tsc && node dist/src/geoscan.benchmark.js",
     "perf:clean": "rm isolate* || echo ''",
     "perf:measure": "node --prof dist/benchmark/geoscan.js",
     "perf:show": "node --prof-process --preprocess -j isolate*.log | node_modules/.bin/flamebearer",

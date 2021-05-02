@@ -2,21 +2,12 @@
 import * as fs from 'fs'
 import { GeoDBScan } from "../src/geoscan.js"
 
-const randomPoints = () => {
-  return {
-    location: {
-      latitude: Math.random(),
-      longitude: Math.random()
-    }
-  }
-}
-
 const benchmarkGeoScan = async () => {
   const content = await fs.promises.readFile('./data/locations.json')
   const locations = JSON.parse(content.toString())
 
   const scan = new GeoDBScan({
-    getLocation (datum: any) {
+    getLocation(datum: any) {
       return { latitude: datum.y, longitude: datum.x }
     },
     epsilon: 10,
@@ -35,11 +26,10 @@ const benchmarkGeoScan = async () => {
     scan.fit(dataset)
     const end = process.hrtime.bigint()
 
-    console.log(`${size}: took ${(end - start) / 1000000000n} seconds`)
+    console.log(`${size}: took ${(end - start) / 1_000_000_000n} seconds`)
   }
 }
 
 benchmarkGeoScan().catch(err => {
   throw err
 })
-
