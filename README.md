@@ -88,6 +88,8 @@ Node.js has a few DBScan libraries, but none of them were quite right for me. `d
 
 These values have to be chosen with knowledge of the data-set and application.
 
+
+
 ## API
 
 ### `new GeoDBScan(opts: GeoDBScanOpts)`
