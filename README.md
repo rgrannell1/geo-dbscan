@@ -93,22 +93,20 @@ These values have to be chosen with knowledge of the data-set and application.
 
 ## Benchmarking
 
+I benchmarked geo-dbscan against real-world location-data to gauge performance.
+
 ```
 1: took 0 seconds
-2: took 0 seconds
-4: took 0 seconds
-8: took 0 seconds
-16: took 0 seconds
-32: took 0 seconds
-64: took 0 seconds
-128: took 0 seconds
-256: took 0 seconds
-512: took 0 seconds
-1,024: took 0 seconds
-2,048: took 0 seconds
-4,096: took 3 seconds
-8,192: took 28 seconds
-16,384: took 223 seconds
+1,001: took 0 seconds
+2,001: took 1 seconds
+3,001: took 6 seconds
+4,001: took 18 seconds
+5,001: took 35 seconds
+6,001: took 56 seconds
+7,001: took 77 seconds
+8,001: took 105 seconds
+9,001: took 160 seconds
+10,001: took 245 seconds
 ```
 
 ## API
