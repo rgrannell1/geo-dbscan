@@ -1,5 +1,5 @@
 
-import { GeoDBScan } from "./geoscan"
+import { GeoDBScan } from "./geoscan.js"
 import { Hypothesis, Explanation } from 'atypical'
 
 const fitHypothesis = new Hypothesis({
@@ -7,27 +7,21 @@ const fitHypothesis = new Hypothesis({
 })
 .cases(function * () {
   while (true) {
-    yield [[
-      {
+    const results = []
+
+    for (let idx = 0; idx < 10; ++idx) {
+      results.push({
         location: {
-          latitude: 0,
-          longitude: 0,
+          latitude: (Math.random() * 190) - 180,
+          longitude: (Math.random() * 360) - 180
         },
-        metadata: 'some-other-fields'
-      },
-      {
-        location: {
-          latitude: 0,
-          longitude: 1,
-        },
-        metadata: 'some-other-fields'
-      },
-    ]]
+        metadata: idx
+      })
+    }
   }
 })
 .always((data) => {
   const scan = new GeoDBScan({
-    data,
     getLocation(datum:any) {
       return datum.location
     },
@@ -35,7 +29,8 @@ const fitHypothesis = new Hypothesis({
     minPoints: 3
   })
 
-  const result = scan.fit()
+  const result = scan.fit(data)
+  console.log('+++')
   console.log(result)
 
   return true

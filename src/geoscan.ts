@@ -2,20 +2,21 @@
 import haversine from 'haversine-distance'
 
 interface Location {
-  latitude: number, longitude: number
+  latitude: number
+  longitude: number
 }
 
 /**
  * Constructor options for Geo DBScan
  */
 interface GeoDBScanOpts <T> {
-  data: T[]
   getLocation: (point: T) => Location
   epsilon: number
   minPoints: number
 }
 
 interface GrowClusterOpts <T> {
+  data: T[]
   labels: number[]
   pointIndex: number
   neighbours: number[]
@@ -29,7 +30,6 @@ export class GeoDBScan <T> {
   minPoints: number
 
   constructor (opts: GeoDBScanOpts<T>) {
-    this.data = opts.data
     this.getLocation = opts.getLocation
     this.epsilon = opts.epsilon
     this.minPoints = opts.minPoints
@@ -44,13 +44,13 @@ export class GeoDBScan <T> {
    *
    * @param point
    */
-  nearby (point: T) {
+  nearby (data: T[], point: T) {
     const pointLocation = this.getLocation(point)
 
     const neighbours:number[] = []
 
-    for (let idx = 0; idx < this.data.length; ++idx) {
-      const candidate = this.data[idx]
+    for (let idx = 0; idx < data.length; ++idx) {
+      const candidate = data[idx]
 
       const candidateLocation = this.getLocation(candidate)
 
@@ -66,7 +66,7 @@ export class GeoDBScan <T> {
    * Grow a new cluster from the provided seed-point.
    */
   growCluster (opts: GrowClusterOpts<T>) {
-    const { labels, pointIndex, clusterId } = opts
+    const { labels, pointIndex, clusterId, data } = opts
     let { neighbours } = opts
 
     labels[pointIndex] = clusterId
@@ -82,7 +82,7 @@ export class GeoDBScan <T> {
       } else if (labels[neighbourIdx] === 0) {
         labels[neighbourIdx] = clusterId
 
-        const branchNeighbours = this.nearby(this.data[neighbourIdx])
+        const branchNeighbours = this.nearby(data, data[neighbourIdx])
 
         // add all the branch neighbors to the FIFO queue
         if (branchNeighbours.length >= this.minPoints) {
@@ -98,22 +98,26 @@ export class GeoDBScan <T> {
    *
    * @returns object
    */
-  fit () {
+  fit (data: T[]) {
     let clusterId = 0
-    const labels = new Array(this.data.length)
+    const labels = []
+    for (let idx = 0; idx < data.length; ++idx) {
+      labels.push(0)
+    }
 
-    for (let idx = 0; idx < this.data.length; ++idx) {
+    for (let idx = 0; idx < data.length; ++idx) {
       // -- skip visited points
       if (labels[idx] !== 0) {
         continue
       }
 
-      const neighbours = this.nearby(this.data[idx])
+      const neighbours = this.nearby(data, data[idx])
       if (neighbours.length < this.minPoints) {
         labels[idx] = -1
       } else {
         clusterId++
         this.growCluster({
+          data,
           labels,
           clusterId,
           pointIndex: idx,
@@ -122,6 +126,11 @@ export class GeoDBScan <T> {
       }
     }
 
-    return labels
+    const cluster: Array<{
+      id: number,
+      noise: boolean
+    }> = []
+
+    return cluster
   }
 }
