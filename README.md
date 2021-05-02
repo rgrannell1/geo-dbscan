@@ -70,7 +70,6 @@ const scan = new GeoDBScan({
 
 const result = scan.fit(data)
 ```
->>>>>>> 6d77608518726c69d8bd6c69b20f718cc6057372
 
 ## Stability
 
