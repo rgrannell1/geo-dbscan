@@ -1,0 +1,12 @@
+{
+  "name": "geo-dbscan",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/rgrannell1/geo-dbscan.git",
+  "author": "Róisín Grannell <r.grannell2@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@rgrannell/revexp": "^1.1.0",
+    "haversine-distance": "^1.2.1"
+  }
+}
