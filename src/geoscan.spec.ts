@@ -2,33 +2,41 @@
 import { GeoDBScan } from "./geoscan.js"
 import { Hypothesis, Explanation } from 'atypical'
 
+const randomPoints = (idx: number) => {
+  return {
+    location: {
+      latitude: Math.random(),
+      longitude: Math.random()
+    },
+    metadata: idx
+  }
+}
+
+const generateCases = function * () {
+  while (true) {
+    const results = []
+    const pointCount = Math.floor(Math.random() * 100)
+
+    for (let idx = 0; idx < pointCount; ++idx) {
+      results.push(randomPoints(idx))
+    }
+
+    const minPoints = Math.floor(Math.random() * 10) + 2
+    yield [results, minPoints]
+  }
+}
+
 const fitHypothesis = new Hypothesis({
   description: 'fit always returns data in the expected format'
 })
-.cases(function * () {
-  while (true) {
-    const results = []
-
-    for (let idx = 0; idx < 10; ++idx) {
-      results.push({
-        location: {
-          latitude: (Math.random() * 180) - 90,
-          longitude: (Math.random() * 360) - 180
-        },
-        metadata: idx
-      })
-    }
-
-    yield [results]
-  }
-})
-.always((data) => {
+.cases(generateCases)
+.always((data, minPoints) => {
   const scan = new GeoDBScan({
     getLocation(datum:any) {
       return datum.location
     },
     epsilon: 10,
-    minPoints: 3
+    minPoints
   })
 
   const result = scan.fit(data)
@@ -40,14 +48,23 @@ const fitHypothesis = new Hypothesis({
     })
   }
 
-  if (result.stats.count !== data.length) {
-    return new Explanation({
-      description: 'invalid stats count',
-      data: { result }
-    })
+  for (const prop of ['clusterCount', 'count', 'clusteredCount', 'noiseCount']) {
+    if (!(result.stats as any).hasOwnProperty(prop)) {
+      return new Explanation({
+        description: `missing property stats.${prop}`,
+        data: { result }
+      })
+    }
   }
 
-
+  for (const [clusterId, cluster] of Object.entries(result.clusters)) {
+    if (clusterId !== '-1' && cluster.length < minPoints) {
+      return new Explanation({
+        description: `cluster ${clusterId} had fewer points than min-points ${minPoints} (${cluster.length})`,
+        data: { result }
+      })
+    }
+  }
 })
 
 export default {

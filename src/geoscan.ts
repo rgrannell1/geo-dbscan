@@ -96,7 +96,7 @@ export class GeoDBScan <T> {
    *
    * @returns object
    */
-  fit (data: T[]): ClusterData {
+  fit (data: T[]): ClusterData <T> {
     let clusterId = 0
     const labels = []
     for (let idx = 0; idx < data.length; ++idx) {
@@ -127,13 +127,27 @@ export class GeoDBScan <T> {
     const noiseCount = labels.filter(data => data === -1).length
     const clusteredCount = labels.filter(data => data !== -1).length
 
+    const clusters: Record<number, T[]> = {  }
+
+    for (let idx = 0; idx < data.length; ++idx) {
+      const clusterId = labels[idx]
+      const datum = data[idx]
+
+      if (!clusters[clusterId]) {
+        clusters[clusterId] = [datum]
+      } else {
+        clusters[clusterId].push(datum)
+      }
+    }
+
     return {
       stats: {
+        clusterCount: clusterId,
         count: data.length,
         clusteredCount,
         noiseCount
       },
-      clusters: []
+      clusters
     }
   }
 }

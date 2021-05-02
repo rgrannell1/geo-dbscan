@@ -29,11 +29,12 @@ export interface Cluster {
   }
 }
 
-export interface ClusterData {
+export interface ClusterData <T> {
   stats: {
     count: number,
     clusteredCount: number,
-    noiseCount: number
+    noiseCount: number,
+    clusterCount: number
   },
-  clusters: Cluster[]
+  clusters: Record<string, T[]>
 }
