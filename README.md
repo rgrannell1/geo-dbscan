@@ -77,7 +77,10 @@ const result = scan.fit(data)
 
 ## Motivation
 
-Node.js has a few DBScan libraries, but none of them were quite right for me. `dbscan_gps` is good but it has a weird callback interface (it's syncronous!) and error-handling, and the performance is horrible when `n > 5,000`
+Node.js has a few DBScan libraries, but none of them were quite right for me. `dbscan_gps` is good but it has a weird callback interface (it's syncronous!) and error-handling, and the performance is horrible when `n > 5,000`. In comparison, geo-dbscan is:
+
+- faster: `geo-dbscan` uses spatial indexing to speed up neighbour searches
+- flexible: `geo-dbscan` lets you provide an accessor to retrieve longitude-latitude coordinates so you don't need to alter your data-model
 
 ## Background
 
@@ -88,7 +91,25 @@ Node.js has a few DBScan libraries, but none of them were quite right for me. `d
 
 These values have to be chosen with knowledge of the data-set and application.
 
+## Benchmarking
 
+```
+1: took 0 seconds
+2: took 0 seconds
+4: took 0 seconds
+8: took 0 seconds
+16: took 0 seconds
+32: took 0 seconds
+64: took 0 seconds
+128: took 0 seconds
+256: took 0 seconds
+512: took 0 seconds
+1,024: took 0 seconds
+2,048: took 0 seconds
+4,096: took 3 seconds
+8,192: took 28 seconds
+16,384: took 223 seconds
+```
 
 ## API
 
@@ -103,7 +124,6 @@ Construct a geodbscan object that can be used to cluster geographical data.
 ### `geoScan.fit(data)`
 
 Cluster data by location. Some points will be classified as noise if they are too far from any cluster.
-
 
 ## License
 
