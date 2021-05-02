@@ -79,8 +79,8 @@ const result = scan.fit(data)
 
 Node.js has a few DBScan libraries, but none of them were quite right for me. `dbscan_gps` is good but it has a weird callback interface (it's syncronous!) and error-handling, and the performance is horrible when `n > 5,000`. In comparison, geo-dbscan is:
 
-- faster: `geo-dbscan` uses spatial indexing to speed up neighbour searches
-- flexible: `geo-dbscan` lets you provide an accessor to retrieve longitude-latitude coordinates so you don't need to alter your data-model
+- **faster**: `geo-dbscan` uses spatial indexing to speed up neighbour searches
+- **flexible**: `geo-dbscan` lets you provide an accessor to retrieve longitude-latitude coordinates so you don't need to alter your data-model
 
 ## Background
 
