@@ -3,6 +3,75 @@
 
 Cluster geographical location-data using DBSCAN. Inspired by [dbscan_gps](https://www.npmjs.com/package/dbscan_gps)
 
+[![CI](https://github.com/rgrannell1/geo-dbscan/actions/workflows/ci.yaml/badge.svg)](https://github.com/rgrannell1/geo-dbscan/actions/workflows/ci.yaml)
+
+Cluster geographical location-data.
+
+```ts
+const data = [
+  {
+    species: 'grouse',
+    location: {
+      longitude: -6.2757118,
+      latitude: 53.3464217
+    }
+  },
+  {
+    species: 'grouse',
+    location: {
+      longitude: -6.2291862,
+      latitude: 53.3863404
+    }
+  },
+  {
+    species: 'quail',
+    location: {
+      longitude: -6.3798805,
+      latitude: 53.3376124
+    }
+  },
+  {
+    species: 'grouse',
+    location: {
+      longitude: -6.2384634,
+      latitude: 53.3584065
+    }
+  },
+  {
+    species: 'pheasant',
+    location: {
+      longitude: -6.1985568,
+      latitude: 53.3942513
+    }
+  },
+  {
+    species: 'pheasant',
+    location: {
+      longitude: -6.2341133,
+      latitude: 53.3543216
+    }
+  },
+  {
+    species: 'quail',
+    location: {
+      longitude: -6.1787156,
+      latitude: 53.2495501
+    }
+  },
+]
+
+const scan = new GeoDBScan({
+  getLocation (datum: any) {
+    return datum.location
+  },
+  epsilon: 10,
+  minPoints: 3
+})
+
+const result = scan.fit(data)
+```
+>>>>>>> 6d77608518726c69d8bd6c69b20f718cc6057372
+
 ## Stability
 
 > 1, Experimental - This project might die, it's undertested and underdocumented, and redesigns and breaking changes are likely
