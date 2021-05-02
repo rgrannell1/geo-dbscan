@@ -56,6 +56,13 @@ export class GeoDBScan <T> {
     return neighbours
   }
 
+  /**
+   * Index geolocation data
+   *
+   * @param data an array of geospatial data
+   *
+   * @returns a Geo object
+   */
   asGeo (data: T[]) {
     const indexable = []
     for (let idx = 0; idx < data.length; ++idx) {

@@ -2,10 +2,11 @@
   "name": "geo-dbscan",
   "type": "module",
   "version": "1.0.0",
-  "main": "index.js",
   "repository": "https://github.com/rgrannell1/geo-dbscan.git",
   "author": "Róisín Grannell <r.grannell2@gmail.com>",
   "license": "MIT",
+  "types": "dist/src/geoscan.d.ts",
+  "main": "dist/src/geoscan.js",
   "scripts": {
     "tsc": "tsc",
     "test": "npm run tsc && node dist/test/index.js",
