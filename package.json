@@ -1,12 +1,22 @@
 {
   "name": "geo-dbscan",
+  "type": "module",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/rgrannell1/geo-dbscan.git",
   "author": "Róisín Grannell <r.grannell2@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "tsc": "tsc",
+    "test": "npm run tsc & c8 node dist/test/index.js"
+  },
   "dependencies": {
+    "haversine-distance": "^1.2.1",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {
     "@rgrannell/revexp": "^1.1.0",
-    "haversine-distance": "^1.2.1"
+    "atypical": "github:rgrannell1/atypical",
+    "c8": "^7.7.1"
   }
 }

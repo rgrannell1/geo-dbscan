@@ -10,7 +10,7 @@ interface Location {
  */
 interface GeoDBScanOpts <T> {
   data: T[]
-  getLocation: (T) => Location
+  getLocation: (point: T) => Location
   epsilon: number
   minPoints: number
 }
@@ -24,7 +24,7 @@ interface GrowClusterOpts <T> {
 
 export class GeoDBScan <T> {
   data: T[]
-  getLocation: (T) => Location
+  getLocation: (point: T) => Location
   epsilon: number
   minPoints: number
 
