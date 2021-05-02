@@ -1,75 +1,24 @@
 
 # geo-dbscan 🗺️
 
-Cluster geographical location-data.
-
-```ts
-const data = [
-  {
-    species: 'grouse',
-    location: {
-      longitude: -6.2757118,
-      latitude: 53.3464217
-    }
-  },
-  {
-    species: 'grouse',
-    location: {
-      longitude: -6.2291862,
-      latitude: 53.3863404
-    }
-  },
-  {
-    species: 'quail',
-    location: {
-      longitude: -6.3798805,
-      latitude: 53.3376124
-    }
-  },
-  {
-    species: 'grouse',
-    location: {
-      longitude: -6.2384634,
-      latitude: 53.3584065
-    }
-  },
-  {
-    species: 'pheasant',
-    location: {
-      longitude: -6.1985568,
-      latitude: 53.3942513
-    }
-  },
-  {
-    species: 'pheasant',
-    location: {
-      longitude: -6.2341133,
-      latitude: 53.3543216
-    }
-  },
-  {
-    species: 'quail',
-    location: {
-      longitude: -6.1787156,
-      latitude: 53.2495501
-    }
-  },
-]
-
-const scan = new GeoDBScan({
-  getLocation (datum: any) {
-    return datum.location
-  },
-  epsilon: 10,
-  minPoints: 3
-})
-
-const result = scan.fit(data)
-```
+Cluster geographical location-data using DBSCAN. Inspired by [dbscan_gps](https://www.npmjs.com/package/dbscan_gps)
 
 ## Stability
 
 > 1, Experimental - This project might die, it's undertested and underdocumented, and redesigns and breaking changes are likely
+
+## Motivation
+
+Node.js has a few DBScan libraries, but none of them were quite right for me. `dbscan_gps` is good but it has a weird callback interface (it's syncronous!) and error-handling, and the performance is horrible when `n > 5,000`
+
+## Background
+
+[DBSCAN](https://en.wikipedia.org/wiki/DBSCAN) is a density-based clustering algorithm that can be used to cluster geolocations based on density, with points in low-density areas being treated as noise. `geo-dbscan` uses two tuning parameters:
+
+- `epsilon`: how far can a point be from a cluster to be included in said cluster? Larger values of epsilon will lead to larger clusters that include more "noise" points, smaller values will produce fewer cluster but they'll be denser. Measured in `km`
+- `minPoints`: the minimum points to form a cluster
+
+These values have to be chosen with knowledge of the data-set and application.
 
 ## API
 

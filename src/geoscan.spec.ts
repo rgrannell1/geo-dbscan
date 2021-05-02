@@ -61,7 +61,10 @@ const fitHypothesis = new Hypothesis({
     if (clusterId !== '-1' && cluster.length < minPoints) {
       return new Explanation({
         description: `cluster ${clusterId} had fewer points than min-points ${minPoints} (${cluster.length})`,
-        data: { result }
+        data: {
+          clusterId,
+          cluster
+         }
       })
     }
   }
