@@ -24,7 +24,7 @@ export declare class GeoDBScan<T> {
      *
      * @param point
      */
-    nearby(data: T[], point: T): number[];
+    regionQuery(geo: any, data: T[], point: T): number[];
     /**
      * Index geolocation data
      *

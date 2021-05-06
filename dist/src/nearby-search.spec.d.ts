@@ -1,5 +1,5 @@
 import { Hypothesis } from 'atypical';
 declare const _default: {
-    regionQueryHypothesis: Hypothesis;
+    noErrorSearchHypothesis: Hypothesis;
 };
 export default _default;

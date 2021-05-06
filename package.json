@@ -18,13 +18,14 @@
   },
   "dependencies": {
     "geo-nearby": "^2.0.1",
-    "haversine-distance": "^1.2.1"
+    "haversine-distance": "^1.2.1",
+    "ngeohash": "^0.6.3"
   },
   "devDependencies": {
-    "flamebearer": "^1.1.3",
     "@rgrannell/revexp": "^1.1.0",
     "atypical": "github:rgrannell1/atypical",
     "c8": "^7.7.1",
+    "flamebearer": "^1.1.3",
     "typescript": "^4.2.4"
   }
 }

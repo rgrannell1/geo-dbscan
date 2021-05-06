@@ -26,9 +26,9 @@ export class GeoDBScan {
      *
      * @param point
      */
-    nearby(data, point) {
+    regionQuery(geo, data, point) {
         const pointLocation = this.getLocation(point);
-        const nearby = this.geo.nearBy(pointLocation.latitude, pointLocation.longitude, this.epsilon * 1000);
+        const nearby = geo.nearBy(pointLocation.latitude, pointLocation.longitude, this.epsilon * 1_000);
         const neighbours = [];
         for (const { i } of nearby) {
             neighbours.push(i);
@@ -66,11 +66,11 @@ export class GeoDBScan {
             // -- not a branch point (not enough neighbours), so add to this cluster
             // -- as a leaf
             if (labels[neighbourIdx] === -1) {
-                labels[neighbourIdx] - clusterId;
+                labels[neighbourIdx] = clusterId;
             }
             else if (labels[neighbourIdx] === 0) {
                 labels[neighbourIdx] = clusterId;
-                const branchNeighbours = this.nearby(data, data[neighbourIdx]);
+                const branchNeighbours = this.regionQuery(this.geo, data, data[neighbourIdx]);
                 // add all the branch neighbors to the FIFO queue
                 if (branchNeighbours.length >= this.minPoints) {
                     neighbours = neighbours.concat(branchNeighbours);
@@ -109,7 +109,7 @@ export class GeoDBScan {
             if (labels[idx] !== 0) {
                 continue;
             }
-            const neighbours = this.nearby(data, data[idx]);
+            const neighbours = this.regionQuery(this.geo, data, data[idx]);
             if (neighbours.length < this.minPoints) {
                 labels[idx] = -1;
             }

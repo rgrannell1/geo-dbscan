@@ -15,6 +15,12 @@ export interface GeoDBScanOpts<T> {
   minPoints: number
 }
 
+export interface NearbySearchOpts<T> {
+  data: T[]
+  getLocation: (point: T) => Location
+  radius: number
+}
+
 export interface GrowClusterOpts<T> {
   data: T[]
   labels: number[]

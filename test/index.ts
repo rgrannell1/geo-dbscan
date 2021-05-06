@@ -2,6 +2,7 @@
 import { Theory } from 'atypical'
 
 import geoscanHypotheses from '../src/geoscan.spec.js'
+import noErrorSearchHypotheses from '../src/nearby-search.spec.js'
 
 const theory = new Theory({
   description: 'all geoscan hypotheses hold'
@@ -9,7 +10,7 @@ const theory = new Theory({
 
 theory
   .expectAll({
-    ...geoscanHypotheses
+    ...noErrorSearchHypotheses
   })
   .test({
     seconds: 30

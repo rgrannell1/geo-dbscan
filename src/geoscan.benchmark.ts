@@ -2,6 +2,9 @@
 import * as fs from 'fs'
 import { GeoDBScan } from "../src/geoscan.js"
 
+/**
+ * Benchmark geoscan for real-world data.
+ */
 const benchmarkGeoScan = async () => {
   const content = await fs.promises.readFile('./data/locations.json')
   const locations = JSON.parse(content.toString())
