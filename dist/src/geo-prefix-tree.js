@@ -9,6 +9,9 @@ export class GeoPrefixTree {
     constructor(opts) {
         const ref = {};
         const queue = [];
+        if (opts.precision < 1) {
+            throw new Error('need at least one character of precision');
+        }
         for (const datum of opts.data) {
             queue.push({
                 ref,
@@ -60,16 +63,72 @@ export class GeoPrefixTree {
         this.tree = ref;
     }
     /**
-     * Get
+     * Get data stored in the tree at a particular geohash value.
      *
-     * @param hash
-     * @returns
+     * @param hash a geohash string
+     *
+     * @returns a tree component, or undefined
      */
     getGeohash(hash) {
         let ref = this.tree;
         for (const char of hash) {
             ref = ref[char];
+            if (!ref) {
+                return;
+            }
         }
         return ref;
+    }
+    /**
+     * Enumerate all values stored with the prefix-tree
+     *
+     * @returns an array of values
+     */
+    values() {
+        let out = [];
+        const queue = [
+            {
+                ref: this.tree
+            }
+        ];
+        do {
+            const { ref } = queue.pop();
+            for (const char of Object.keys(ref)) {
+                if (ref[char]?.entries) {
+                    out = out.concat(ref[char]?.entries);
+                }
+                else {
+                    queue.push({ ref: ref[char] });
+                }
+            }
+        } while (queue.length > 0);
+        return out;
+    }
+    /**
+     * Count the number of items stored in the prefix-tree
+     *
+     * @returns a nonnegative integer
+     */
+    size() {
+        let count = 0;
+        const queue = [
+            {
+                ref: this.tree
+            }
+        ];
+        do {
+            const { ref } = queue.pop();
+            for (const char of Object.keys(ref)) {
+                if (ref[char]?.entries) {
+                    count += ref[char].entries.length;
+                }
+                else {
+                    queue.push({
+                        ref: ref[char]
+                    });
+                }
+            }
+        } while (queue.length > 0);
+        return count;
     }
 }

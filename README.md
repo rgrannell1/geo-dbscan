@@ -91,6 +91,11 @@ Node.js has a few DBScan libraries, but none of them were quite right for me. `d
 
 These values have to be chosen with knowledge of the data-set and application.
 
+The bottleneck in DBSCAN is the search for points within a radius `r` of a selected point `p`. This can be accelerated by using a data-structure suitable for these searches. `geo-dbscan` uses a combination of techniques:
+
+- points are added to a [geohash](https://en.wikipedia.org/wiki/Geohash#Algorithm_and_example) prefix tree so points within a relatively small candidate area can be quickly selected.
+- the haversine distance for each point to `p` in this area is computed; if it's within the required radius, it's returned.
+
 ## Benchmarking
 
 I benchmarked geo-dbscan against real-world location-data to gauge performance.

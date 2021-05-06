@@ -21,11 +21,24 @@ export declare class GeoPrefixTree<T extends TreeData> {
      */
     constructor(opts: GeoPrefixTreeOpts<T>);
     /**
-     * Get
+     * Get data stored in the tree at a particular geohash value.
      *
-     * @param hash
-     * @returns
+     * @param hash a geohash string
+     *
+     * @returns a tree component, or undefined
      */
-    getGeohash(hash: string): Record<string, {}>;
+    getGeohash(hash: string): Record<string, {}> | undefined;
+    /**
+     * Enumerate all values stored with the prefix-tree
+     *
+     * @returns an array of values
+     */
+    values(): any;
+    /**
+     * Count the number of items stored in the prefix-tree
+     *
+     * @returns a nonnegative integer
+     */
+    size(): number;
 }
 export {};

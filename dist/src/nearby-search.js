@@ -40,7 +40,6 @@ export class NearbySearch {
             data,
             precision: 1
         });
-        // -- add a tree
     }
     getGeohash(point) {
         const location = this.getLocation(point);

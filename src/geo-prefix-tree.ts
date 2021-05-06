@@ -30,6 +30,10 @@ export class GeoPrefixTree<T extends TreeData> {
     const ref: Record<string, any> = { }
     const queue: any[] = []
 
+    if (opts.precision < 1) {
+      throw new Error('need at least one character of precision')
+    }
+
     for (const datum of opts.data) {
       queue.push({
         ref,
