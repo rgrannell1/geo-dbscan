@@ -28,8 +28,7 @@ const noErrorSearchHypothesis = new Hypothesis({ description: 'finds minimum geo
         }
     });
     const precision = search.radiusToPrecisionBounds(radius);
-    const minDimension = NearbySearch.areas[2];
-    //    const minDimension = NearbySearch.areas[precision - 1]
+    const minDimension = NearbySearch.areas[precision - 1];
     if (minDimension < radius) {
         return new Explanation({
             description: 'min dimension of geohash bounding box was not gte radius',

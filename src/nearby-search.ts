@@ -53,8 +53,6 @@ export class NearbySearch <T> {
       data,
       precision: 1
     })
-
-    // -- add a tree
   }
 
   getGeohash (point: T) {
