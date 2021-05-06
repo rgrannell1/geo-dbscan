@@ -96,18 +96,82 @@ export class GeoPrefixTree<T extends TreeData> {
   }
 
   /**
-   * Get
+   * Get data stored in the tree at a particular geohash value.
    *
-   * @param hash
-   * @returns
+   * @param hash a geohash string
+   *
+   * @returns a tree component, or undefined
    */
   getGeohash (hash: string) {
     let ref = this.tree
 
     for (const char of hash) {
       ref = ref[char]
+      if (!ref) {
+        return
+      }
     }
 
     return ref
+  }
+
+  /**
+   * Enumerate all values stored with the prefix-tree
+   *
+   * @returns an array of values
+   */
+  values () {
+    let out: any = []
+    const queue: any = [
+      {
+        ref: this.tree as any
+      }
+    ]
+
+    do {
+      const { ref } = queue.pop()
+
+      for (const char of Object.keys(ref)) {
+        if (ref[char]?.entries) {
+          out = out.concat(ref[char]?.entries)
+        } else {
+          queue.push({ ref: ref[char] })
+        }
+      }
+    }
+    while (queue.length > 0)
+
+    return out
+  }
+
+  /**
+   * Count the number of items stored in the prefix-tree
+   *
+   * @returns a nonnegative integer
+   */
+  size () {
+    let count = 0
+    const queue: any = [
+      {
+        ref: this.tree as any
+      }
+    ]
+
+    do {
+      const { ref } = queue.pop()
+
+      for (const char of Object.keys(ref)) {
+        if (ref[char]?.entries) {
+          count += ref[char].entries.length
+        } else {
+          queue.push({
+            ref: ref[char]
+          })
+        }
+      }
+    }
+    while (queue.length > 0)
+
+    return count
   }
 }
