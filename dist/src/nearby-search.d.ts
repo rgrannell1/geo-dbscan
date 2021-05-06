@@ -2,13 +2,10 @@ import { NearbySearchOpts, Location } from "./types";
 import { GeoPrefixTree } from "./geo-prefix-tree.js";
 export declare class NearbySearch<T> {
     static areas: number[];
-    data: Array<{
-        longitude: number;
-        latitude: number;
+    geoTree: GeoPrefixTree<{
+        location: Location;
         geohash: string;
-    }>;
-    geoTree: GeoPrefixTree<T & {
-        geohash: string;
+        value: any;
     }>;
     radius: number;
     precision: number;

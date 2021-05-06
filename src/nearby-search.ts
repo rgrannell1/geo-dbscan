@@ -25,12 +25,7 @@ const areas = [
 
 export class NearbySearch <T> {
   static areas = areas
-  data: Array<{
-    longitude: number
-    latitude: number
-    geohash: string
-  }>
-  geoTree: GeoPrefixTree<T & { geohash: string }>
+  geoTree: GeoPrefixTree<{ location: Location, geohash: string, value: any }>
   radius: number
   precision: number
   getLocation: (point: T) => Location
@@ -44,18 +39,18 @@ export class NearbySearch <T> {
     this.precision = this.radiusToPrecisionBounds(opts.radius)
     this.getLocation = opts.getLocation
 
-    this.data = opts.data.map(point => {
+    const data = opts.data.map(point => {
       const location = opts.getLocation(point)
 
       return {
-        ...location,
+        location,
         geohash: geohash.encode(location.latitude, location.longitude),
         value: point
       }
     })
 
     this.geoTree = new GeoPrefixTree({
-      data: this.data,
+      data,
       precision: 1
     })
 

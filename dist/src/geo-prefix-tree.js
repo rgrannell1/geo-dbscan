@@ -1,6 +1,12 @@
 export class GeoPrefixTree {
+    /**
+     * Construct a geohash prefix tree containing all the provided values
+     *
+     * @param opts
+     * @param opts.data
+     * @param opts.precision the geohash length; longer is more precise
+     */
     constructor(opts) {
-        this.data = {};
         const ref = {};
         const queue = [];
         for (const datum of opts.data) {
@@ -52,5 +58,18 @@ export class GeoPrefixTree {
             });
         }
         this.tree = ref;
+    }
+    /**
+     * Get
+     *
+     * @param hash
+     * @returns
+     */
+    getGeohash(hash) {
+        let ref = this.tree;
+        for (const char of hash) {
+            ref = ref[char];
+        }
+        return ref;
     }
 }

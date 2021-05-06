@@ -28,16 +28,16 @@ export class NearbySearch {
     constructor(opts) {
         this.precision = this.radiusToPrecisionBounds(opts.radius);
         this.getLocation = opts.getLocation;
-        this.data = opts.data.map(point => {
+        const data = opts.data.map(point => {
             const location = opts.getLocation(point);
             return {
-                ...location,
+                location,
                 geohash: geohash.encode(location.latitude, location.longitude),
                 value: point
             };
         });
         this.geoTree = new GeoPrefixTree({
-            data: this.data,
+            data,
             precision: 1
         });
         // -- add a tree

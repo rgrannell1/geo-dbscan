@@ -1,10 +1,18 @@
 
+import {
+  Location
+} from './types'
+
 interface TreeData {
   geohash: string
 }
 
-interface GeoPrefixTreeOpts {
-  data: any
+interface GeoPrefixTreeOpts<T> {
+  data: Array<{
+    location: Location
+    geohash: string
+    value: any
+  }>
   precision: number
 }
 
@@ -15,8 +23,10 @@ export class GeoPrefixTree<T extends TreeData> {
    * Construct a geohash prefix tree containing all the provided values
    *
    * @param opts
+   * @param opts.data
+   * @param opts.precision the geohash length; longer is more precise
    */
-  constructor (opts: GeoPrefixTreeOpts) {
+  constructor (opts: GeoPrefixTreeOpts<T>) {
     const ref: Record<string, any> = { }
     const queue: any[] = []
 
@@ -83,5 +93,21 @@ export class GeoPrefixTree<T extends TreeData> {
     }
 
     this.tree = ref
+  }
+
+  /**
+   * Get
+   *
+   * @param hash
+   * @returns
+   */
+  getGeohash (hash: string) {
+    let ref = this.tree
+
+    for (const char of hash) {
+      ref = ref[char]
+    }
+
+    return ref
   }
 }
