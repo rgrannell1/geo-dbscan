@@ -1,5 +1,6 @@
 import geohash from 'ngeohash';
 import haversine from "haversine-distance";
+import { GeoPrefixTree } from "./geo-prefix-tree.js";
 /**
  * the max area bound, by size. Index n corresponds to geohash length n + 1. The value
  *  corresponds to the max of width x height of the area of land bounded by geohash of length n, in meters.
@@ -31,13 +32,22 @@ export class NearbySearch {
             const location = opts.getLocation(point);
             return {
                 ...location,
-                geohash: geohash.encode(location.latitude, location.longitude)
+                geohash: geohash.encode(location.latitude, location.longitude),
+                value: point
             };
         });
+        this.geoTree = new GeoPrefixTree({
+            data: this.data,
+            precision: 1
+        });
+        // -- add a tree
     }
     getGeohash(point) {
         const location = this.getLocation(point);
         return geohash.encode(location.latitude, location.longitude);
+    }
+    getNeighbourGeohashes(hash) {
+        // decode
     }
     /**
      * Find points within the nine geohash area, as these could potentially be within the candidate point's

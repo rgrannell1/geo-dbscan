@@ -6,8 +6,10 @@ import { NearbySearch } from './nearby-search.js'
 
 const geoPoint = ( ) => {
   return {
-    longitude: (360 * Math.random()) - 180,
-    latitude: (180 * Math.random()) - 90
+    location: {
+      longitude: (360 * Math.random()) - 180,
+      latitude: (180 * Math.random()) - 90
+    }
   }
 }
 
@@ -28,13 +30,15 @@ const noErrorSearchHypothesis = new Hypothesis({ description: 'finds minimum geo
     const search = new NearbySearch({
       data,
       radius: 1000,
-      getLocation (point: Location) {
-        return point
+      getLocation (point: any) {
+        return point.location
       }
     })
 
     const precision = search.radiusToPrecisionBounds(radius)
-    const minDimension = NearbySearch.areas[precision - 1]
+    const minDimension = NearbySearch.areas[2]
+
+//    const minDimension = NearbySearch.areas[precision - 1]
 
     if (minDimension < radius) {
       return new Explanation({

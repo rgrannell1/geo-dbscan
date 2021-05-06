@@ -2,6 +2,7 @@
 import { NearbySearchOpts, Location } from "./types"
 import geohash from 'ngeohash'
 import haversine from "haversine-distance"
+import { GeoPrefixTree } from "./geo-prefix-tree.js"
 
 /**
  * the max area bound, by size. Index n corresponds to geohash length n + 1. The value
@@ -29,6 +30,7 @@ export class NearbySearch <T> {
     latitude: number
     geohash: string
   }>
+  geoTree: GeoPrefixTree<T & { geohash: string }>
   radius: number
   precision: number
   getLocation: (point: T) => Location
@@ -47,14 +49,26 @@ export class NearbySearch <T> {
 
       return {
         ...location,
-        geohash: geohash.encode(location.latitude, location.longitude)
+        geohash: geohash.encode(location.latitude, location.longitude),
+        value: point
       }
     })
+
+    this.geoTree = new GeoPrefixTree({
+      data: this.data,
+      precision: 1
+    })
+
+    // -- add a tree
   }
 
   getGeohash (point: T) {
     const location = this.getLocation(point)
     return geohash.encode(location.latitude, location.longitude)
+  }
+
+  getNeighbourGeohashes (hash: string) {
+    // decode
   }
 
   /**
