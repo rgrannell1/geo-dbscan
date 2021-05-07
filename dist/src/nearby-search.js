@@ -26,6 +26,7 @@ export class NearbySearch {
      */
     constructor(opts) {
         const [precision, area] = this.radiusToPrecisionBounds(opts.radius);
+        this.radius = opts.radius;
         this.precision = precision;
         this.getLocation = opts.getLocation;
         const hashes = {};
@@ -111,15 +112,15 @@ export class NearbySearch {
     /**
      * Search for points within a radius r of a point
      *
-     * @param point
+     * @param point the point to search around
      *
-     * @returns
+     * @returns an array of points with r of a search point
      */
     search(point) {
         const candidates = this.candidatePoints(point);
         const location = this.getLocation(point);
         return candidates.filter(candidate => {
-            return this.distance(location, candidate) < this.radius;
+            return this.distance(location, candidate) <= this.radius;
         });
     }
 }

@@ -1,4 +1,5 @@
 import { Hypothesis, Explanation } from 'atypical';
+import haversine from "haversine-distance";
 import { NearbySearch } from './nearby-search.js';
 import { radiusGenerator, randomPoint } from './test-utils/points.js';
 const randomCasesAndMetrics = function* () {
@@ -10,7 +11,7 @@ const randomCasesAndMetrics = function* () {
         const meters = Math.floor(Math.random() * 10_000);
         const search = new NearbySearch({
             data,
-            radius: 1000,
+            radius: 1_000,
             getLocation(point) {
                 return point.location;
             }
@@ -37,7 +38,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     .cases(function* () {
     while (true) {
         const seed = randomPoint();
-        const radius = Math.random() * 10_000;
+        const radius = Math.floor(Math.random() * 10_000);
         const entries = [];
         for (let idx = 0; idx < Math.floor(Math.random() * 100); ++idx) {
             const neighbour = radiusGenerator.inside(seed, radius);
@@ -56,11 +57,16 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     .always((seed, entries, search) => {
     const actual = search.candidatePoints(seed);
     if (actual.length !== entries.length) {
+        const distances = entries
+            .map((entry) => haversine(entry.location, seed.location))
+            .sort();
         return new Explanation({
             description: 'mismatch in candidate length from input length',
             data: {
                 actualLength: actual.length,
-                expectedLength: entries.length
+                expectedLength: entries.length,
+                distances,
+                radius: search.radius
             }
         });
     }

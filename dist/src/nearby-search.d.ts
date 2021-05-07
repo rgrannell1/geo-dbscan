@@ -54,9 +54,9 @@ export declare class NearbySearch<T> {
     /**
      * Search for points within a radius r of a point
      *
-     * @param point
+     * @param point the point to search around
      *
-     * @returns
+     * @returns an array of points with r of a search point
      */
     search(point: T): T[];
 }
