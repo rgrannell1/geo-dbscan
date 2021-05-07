@@ -40,7 +40,8 @@ export class NearbySearch <T> {
    * @param opts
    */
   constructor (opts: NearbySearchOpts<T>) {
-    this.precision = this.radiusToPrecisionBounds(opts.radius)
+    const [precision, area] = this.radiusToPrecisionBounds(opts.radius)
+    this.precision = precision
     this.getLocation = opts.getLocation
 
     const hashes: Record<string, {
@@ -59,6 +60,8 @@ export class NearbySearch <T> {
           hash,
           entries: [point]
         }
+      } else {
+        hashes[hash].entries.push(point)
       }
     }
 
@@ -91,20 +94,17 @@ export class NearbySearch <T> {
   candidatePoints (point: T): T[] {
     let entries: T[] = []
     const geohash = this.getGeohash(point, this.precision)
+    const candidateHashes = new Set([geohash, ...this.getNeighbourGeohashes(geohash)])
 
-    if (!this.hashes[geohash]) {
-      return entries
-    } else {
-      for (const hash of this.getNeighbourGeohashes(geohash)) {
-        if (hash in this.hashes) {
-          for (const entry of this.hashes[hash].entries) {
-            entries.push(entry)
-          }
+    for (const hash of candidateHashes) {
+      if (hash in this.hashes) {
+        for (const entry of this.hashes[hash].entries) {
+          entries.push(entry)
         }
       }
-
-      return entries
     }
+
+    return entries
   }
 
   /**
@@ -120,11 +120,11 @@ export class NearbySearch <T> {
     for (let idx = 0; idx < areas.length; idx++) {
       const tooSmall = areas[idx] < radius
       if (tooSmall) {
-        return idx
+        return [idx, areas[idx - 1]]
       }
     }
 
-    return 1
+    return [1, areas[0]]
   }
 
   /**

@@ -25,7 +25,8 @@ export class NearbySearch {
      * @param opts
      */
     constructor(opts) {
-        this.precision = this.radiusToPrecisionBounds(opts.radius);
+        const [precision, area] = this.radiusToPrecisionBounds(opts.radius);
+        this.precision = precision;
         this.getLocation = opts.getLocation;
         const hashes = {};
         for (const point of opts.data) {
@@ -37,6 +38,9 @@ export class NearbySearch {
                     hash,
                     entries: [point]
                 };
+            }
+            else {
+                hashes[hash].entries.push(point);
             }
         }
         this.hashes = hashes;
@@ -65,28 +69,15 @@ export class NearbySearch {
     candidatePoints(point) {
         let entries = [];
         const geohash = this.getGeohash(point, this.precision);
-        console.log(geohash);
-        console.log(geohash);
-        console.log(geohash);
-        console.log(geohash);
-        console.log(geohash);
-        console.log(Object.keys(this.hashes));
-        console.log(Object.keys(this.hashes));
-        console.log(Object.keys(this.hashes));
-        console.log(Object.keys(this.hashes));
-        if (!this.hashes[geohash]) {
-            return entries;
-        }
-        else {
-            for (const hash of this.getNeighbourGeohashes(geohash)) {
-                if (hash in this.hashes) {
-                    for (const entry of this.hashes[hash].entries) {
-                        entries.push(entry);
-                    }
+        const candidateHashes = new Set([geohash, ...this.getNeighbourGeohashes(geohash)]);
+        for (const hash of candidateHashes) {
+            if (hash in this.hashes) {
+                for (const entry of this.hashes[hash].entries) {
+                    entries.push(entry);
                 }
             }
-            return entries;
         }
+        return entries;
     }
     /**
      * Given a point and a radius r, find the geohash precision at which we should
@@ -101,10 +92,10 @@ export class NearbySearch {
         for (let idx = 0; idx < areas.length; idx++) {
             const tooSmall = areas[idx] < radius;
             if (tooSmall) {
-                return idx;
+                return [idx, areas[idx - 1]];
             }
         }
-        return 1;
+        return [1, areas[0]];
     }
     /**
      * Compute the haversine distance between two points
