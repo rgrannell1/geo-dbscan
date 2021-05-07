@@ -1,23 +1,28 @@
 import { NearbySearchOpts, Location } from "./types";
-import { GeoPrefixTree } from "./geo-prefix-tree.js";
 export declare class NearbySearch<T> {
     static areas: number[];
-    geoTree: GeoPrefixTree<{
-        location: Location;
-        geohash: string;
-        value: any;
-    }>;
     radius: number;
     precision: number;
     getLocation: (point: T) => Location;
+    hashes: Record<string, {
+        location: Location;
+        hash: string;
+        entries: T[];
+    }>;
     /**
      * Index any provided search data
      *
      * @param opts
      */
     constructor(opts: NearbySearchOpts<T>);
-    getGeohash(point: T): any;
-    getNeighbourGeohashes(hash: string): void;
+    getGeohash(point: T, precision: number): any;
+    /**
+     *
+     *
+     * @param hash
+     * @returns
+     */
+    getNeighbourGeohashes(hash: string): any;
     /**
      * Find points within the nine geohash area, as these could potentially be within the candidate point's
      * radius.

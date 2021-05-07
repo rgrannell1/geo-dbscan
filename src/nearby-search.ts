@@ -1,8 +1,8 @@
 
 import { NearbySearchOpts, Location } from "./types"
 import geohash from 'ngeohash'
+
 import haversine from "haversine-distance"
-import { GeoPrefixTree } from "./geo-prefix-tree.js"
 
 /**
  * the max area bound, by size. Index n corresponds to geohash length n + 1. The value
@@ -25,10 +25,14 @@ const areas = [
 
 export class NearbySearch <T> {
   static areas = areas
-  geoTree: GeoPrefixTree<{ location: Location, geohash: string, value: any }>
   radius: number
   precision: number
   getLocation: (point: T) => Location
+  hashes: Record<string, {
+    location: Location,
+    hash: string,
+    entries: T[]
+  }>
 
   /**
    * Index any provided search data
@@ -39,29 +43,41 @@ export class NearbySearch <T> {
     this.precision = this.radiusToPrecisionBounds(opts.radius)
     this.getLocation = opts.getLocation
 
-    const data = opts.data.map(point => {
+    const hashes: Record<string, {
+      location: Location,
+      hash: string,
+      entries: T[]
+    }> = { }
+
+    for (const point of opts.data) {
       const location = opts.getLocation(point)
+      const hash = geohash.encode(location.latitude, location.longitude).slice(0, this.precision)
 
-      return {
-        location,
-        geohash: geohash.encode(location.latitude, location.longitude),
-        value: point
+      if (!hashes[hash]) {
+        hashes[hash] = {
+          location,
+          hash,
+          entries: [point]
+        }
       }
-    })
+    }
 
-    this.geoTree = new GeoPrefixTree({
-      data,
-      precision: 1
-    })
+    this.hashes = hashes
   }
 
-  getGeohash (point: T) {
+  getGeohash (point: T, precision: number) {
     const location = this.getLocation(point)
-    return geohash.encode(location.latitude, location.longitude)
+    return geohash.encode(location.latitude, location.longitude).slice(0, precision)
   }
 
+  /**
+   *
+   *
+   * @param hash
+   * @returns
+   */
   getNeighbourGeohashes (hash: string) {
-    // decode
+    return geohash.neighbors(hash)
   }
 
   /**
@@ -73,9 +89,22 @@ export class NearbySearch <T> {
    * @returns any points within the 9 candidate geohash boxes
    */
   candidatePoints (point: T): T[] {
-    const geohash = this.getGeohash(point)
+    let entries: T[] = []
+    const geohash = this.getGeohash(point, this.precision)
 
-    return []
+    if (!this.hashes[geohash]) {
+      return entries
+    } else {
+      for (const hash of this.getNeighbourGeohashes(geohash)) {
+        if (hash in this.hashes) {
+          for (const entry of this.hashes[hash].entries) {
+            entries.push(entry)
+          }
+        }
+      }
+
+      return entries
+    }
   }
 
   /**
@@ -122,7 +151,7 @@ export class NearbySearch <T> {
     const location = this.getLocation(point)
 
     return candidates.filter(candidate => {
-      return this.distance(location, candidate) >= this.radius
+      return this.distance(location, candidate) < this.radius
     })
   }
 }

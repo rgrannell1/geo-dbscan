@@ -1,6 +1,5 @@
 import geohash from 'ngeohash';
 import haversine from "haversine-distance";
-import { GeoPrefixTree } from "./geo-prefix-tree.js";
 /**
  * the max area bound, by size. Index n corresponds to geohash length n + 1. The value
  *  corresponds to the max of width x height of the area of land bounded by geohash of length n, in meters.
@@ -28,25 +27,32 @@ export class NearbySearch {
     constructor(opts) {
         this.precision = this.radiusToPrecisionBounds(opts.radius);
         this.getLocation = opts.getLocation;
-        const data = opts.data.map(point => {
+        const hashes = {};
+        for (const point of opts.data) {
             const location = opts.getLocation(point);
-            return {
-                location,
-                geohash: geohash.encode(location.latitude, location.longitude),
-                value: point
-            };
-        });
-        this.geoTree = new GeoPrefixTree({
-            data,
-            precision: 1
-        });
+            const hash = geohash.encode(location.latitude, location.longitude).slice(0, this.precision);
+            if (!hashes[hash]) {
+                hashes[hash] = {
+                    location,
+                    hash,
+                    entries: [point]
+                };
+            }
+        }
+        this.hashes = hashes;
     }
-    getGeohash(point) {
+    getGeohash(point, precision) {
         const location = this.getLocation(point);
-        return geohash.encode(location.latitude, location.longitude);
+        return geohash.encode(location.latitude, location.longitude).slice(0, precision);
     }
+    /**
+     *
+     *
+     * @param hash
+     * @returns
+     */
     getNeighbourGeohashes(hash) {
-        // decode
+        return geohash.neighbors(hash);
     }
     /**
      * Find points within the nine geohash area, as these could potentially be within the candidate point's
@@ -57,8 +63,30 @@ export class NearbySearch {
      * @returns any points within the 9 candidate geohash boxes
      */
     candidatePoints(point) {
-        const geohash = this.getGeohash(point);
-        return [];
+        let entries = [];
+        const geohash = this.getGeohash(point, this.precision);
+        console.log(geohash);
+        console.log(geohash);
+        console.log(geohash);
+        console.log(geohash);
+        console.log(geohash);
+        console.log(Object.keys(this.hashes));
+        console.log(Object.keys(this.hashes));
+        console.log(Object.keys(this.hashes));
+        console.log(Object.keys(this.hashes));
+        if (!this.hashes[geohash]) {
+            return entries;
+        }
+        else {
+            for (const hash of this.getNeighbourGeohashes(geohash)) {
+                if (hash in this.hashes) {
+                    for (const entry of this.hashes[hash].entries) {
+                        entries.push(entry);
+                    }
+                }
+            }
+            return entries;
+        }
     }
     /**
      * Given a point and a radius r, find the geohash precision at which we should
@@ -100,7 +128,7 @@ export class NearbySearch {
         const candidates = this.candidatePoints(point);
         const location = this.getLocation(point);
         return candidates.filter(candidate => {
-            return this.distance(location, candidate) >= this.radius;
+            return this.distance(location, candidate) < this.radius;
         });
     }
 }
