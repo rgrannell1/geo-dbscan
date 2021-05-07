@@ -73,6 +73,37 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     }
   })
   .always((seed, entries, search) => {
+    let stored: any[] = []
+
+    for (const entry of Object.values(search.hashes)) {
+      stored = stored.concat((entry as any).entries)
+    }
+
+    if (stored.length !== entries.length) {
+      return new Explanation({
+        description: 'mismatch between points given and saved',
+        data: {
+          storedLength: stored.length,
+          entries: entries.length
+        }
+      })
+    }
+  })
+  .always((seed, entries, search) => {
+    const geohashes = Object.keys(search.hashes)
+
+    const expectedCount = geohashes.length >= 1 && geohashes.length <= 9
+
+    if (!expectedCount) {
+      return new Explanation({
+        description: 'mismatch in candidate length from input length',
+        data: {
+          geohashCount: geohashes.length
+        }
+      })
+    }
+  })
+  .always((seed, entries, search) => {
     const actual = search.candidatePoints(seed)
 
     if (actual.length !== entries.length) {
@@ -81,12 +112,13 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
         .sort()
 
       return new Explanation({
-        description: 'mismatch in candidate length from input length',
+        description: 'mismatch between returned candidates and provided',
         data: {
           actualLength: actual.length,
           expectedLength: entries.length,
           distances,
-          radius: search.radius
+          radius: search.radius,
+          hashes: search.hashes
         }
       })
     }

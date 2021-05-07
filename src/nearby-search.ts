@@ -55,14 +55,14 @@ export class NearbySearch <T> {
       const location = opts.getLocation(point)
       const hash = geohash.encode(location.latitude, location.longitude).slice(0, this.precision)
 
-      if (!hashes[hash]) {
+      if (hashes[hash]) {
+        hashes[hash].entries.push(point)
+      } else {
         hashes[hash] = {
           location,
           hash,
           entries: [point]
         }
-      } else {
-        hashes[hash].entries.push(point)
       }
     }
 
