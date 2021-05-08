@@ -29,7 +29,7 @@ export declare class NearbySearch<T> {
      * @param hash
      * @returns
      */
-    getNeighbourGeohashes(hash: string): any;
+    getNeighbourGeohashes(hash: string): any[];
     /**
      * Find points within the nine geohash area, as these could potentially be within the candidate point's
      * radius.

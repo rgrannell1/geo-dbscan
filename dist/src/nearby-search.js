@@ -64,7 +64,7 @@ export class NearbySearch {
      * @returns
      */
     getNeighbourGeohashes(hash) {
-        return geohash.neighbors(hash);
+        return [hash, ...geohash.neighbors(hash)];
     }
     /**
      * Find points within the nine geohash area, as these could potentially be within the candidate point's

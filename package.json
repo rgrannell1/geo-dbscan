@@ -17,6 +17,7 @@
     "perf": "npm run perf:clean; npm run perf:measure; npm run perf:show"
   },
   "dependencies": {
+    "cheap-ruler": "^3.0.1",
     "haversine": "^1.1.1",
     "ngeohash": "^0.6.3"
   },

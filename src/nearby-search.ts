@@ -88,7 +88,7 @@ export class NearbySearch <T> {
    * @returns
    */
   getNeighbourGeohashes (hash: string) {
-    return geohash.neighbors(hash)
+    return [hash, ...geohash.neighbors(hash)]
   }
 
   /**

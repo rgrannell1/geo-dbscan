@@ -44,7 +44,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
         const entries = [];
         for (let idx = 0; idx < Math.floor(Math.random() * 100); ++idx) {
             const neighbour = radiusGenerator.inside(seed, radius);
-            entries.push(neighbour);
+            entries.push(seed); /// TODO
         }
         const search = new NearbySearch({
             data: entries,
