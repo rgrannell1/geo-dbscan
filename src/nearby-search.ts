@@ -76,7 +76,7 @@ export class NearbySearch <T> {
     this.hashes = hashes
   }
 
-  getGeohash (point: T, precision: number) {
+  geohash (point: T, precision: number) {
     const location = this.getLocation(point)
     return geohash.encode(location.latitude, location.longitude).slice(0, precision)
   }
@@ -101,7 +101,7 @@ export class NearbySearch <T> {
    */
   candidatePoints (point: T): T[] {
     let entries: T[] = []
-    const geohash = this.getGeohash(point, this.precision)
+    const geohash = this.geohash(point, this.precision)
     const candidateHashes = new Set([geohash, ...this.getNeighbourGeohashes(geohash)])
 
     for (const hash of candidateHashes) {

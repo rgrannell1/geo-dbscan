@@ -51,6 +51,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
   .cases(function * () {
     while (true) {
 
+      // -- the centre point
       const seed = randomPoint()
       const radius = Math.floor(Math.random() * 10_000)
 
@@ -88,6 +89,26 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
         }
       })
     }
+  })
+  .always((seed, entries, search) => {
+    const seedHash = search.geohash(seed, search.precision)
+
+    const seedNeighbours = new Set(search.getNeighbourGeohashes(seedHash))
+    const storageHashes = new Set(Object.keys(search.hashes))
+
+    for (const stored of storageHashes) {
+      if (!seedNeighbours.has(stored)) {
+        return new Explanation({
+          description: 'entry stored in non-neighbour geohash of seed-point',
+          data: {
+            mismatch: stored,
+            seedNeighbours: [...seedNeighbours],
+            storedHashes: [...storageHashes]
+          }
+        })
+      }
+    }
+
   })
   .always((seed, entries, search) => {
     const actual = search.candidatePoints(seed)

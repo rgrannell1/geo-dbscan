@@ -22,7 +22,7 @@ export declare class NearbySearch<T> {
      * @param opts
      */
     constructor(opts: NearbySearchOpts<T>);
-    getGeohash(point: T, precision: number): any;
+    geohash(point: T, precision: number): any;
     /**
      *
      *
