@@ -1,4 +1,4 @@
-import haversine from 'haversine-distance';
+import haversine from 'haversine';
 import { NearbySearch } from './nearby-search.js';
 /**
  *
@@ -19,7 +19,7 @@ export class GeoDBScan {
      *   `epsilon` km of another point
      */
     withinDistance(location0, location1) {
-        return haversine(location0, location1) < (this.epsilon * 1000); // km distance
+        return haversine(location0, location1, { unit: 'meter' }) < (this.epsilon * 1000); // km distance
     }
     /**
      * Find all points idxs within `eps`km of a point. O(n), needs spatial indexing

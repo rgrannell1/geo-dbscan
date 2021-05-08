@@ -1,6 +1,7 @@
 
 import { Hypothesis, Explanation } from 'atypical'
-import haversine from "haversine-distance"
+import haversine from "haversine"
+import geohash from 'ngeohash'
 
 import { NearbySearch } from './nearby-search.js'
 import { Point } from './test-utils/points'
@@ -98,12 +99,16 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
 
     for (const stored of storageHashes) {
       if (!seedNeighbours.has(stored)) {
+
         return new Explanation({
           description: 'entry stored in non-neighbour geohash of seed-point',
           data: {
             mismatch: stored,
+            mismatchDecoded: geohash.decode(stored),
             seedNeighbours: [...seedNeighbours],
-            storedHashes: [...storageHashes]
+            storedHashes: [...storageHashes],
+            decodedSeedNeighbours: [...seedNeighbours].map(str => geohash.decode(str)),
+            decodedStoredHashes: [...storageHashes].map(str => geohash.decode(str))
           }
         })
       }
@@ -115,7 +120,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
 
     if (actual.length !== entries.length) {
       const distances = entries
-        .map((entry: any) => Math.floor(haversine(entry.location, seed.location)))
+        .map((entry: any) => Math.floor(haversine(entry.location, seed.location, {unit: 'meter'})))
         .sort()
 
       return new Explanation({

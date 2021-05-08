@@ -1,5 +1,5 @@
 import geohash from 'ngeohash';
-import haversine from "haversine-distance";
+import haversine from "haversine";
 /**
  * the max area bound, by size. Index n corresponds to geohash length n + 1. The value
  *  corresponds to the max of width x height of the area of land bounded by geohash of length n, in meters.
@@ -114,7 +114,7 @@ export class NearbySearch {
      * @returns the distance between two points, in meters
      */
     distance(location, point) {
-        return haversine(location, this.getLocation(point));
+        return haversine(location, this.getLocation(point), { unit: 'meter' });
     }
     /**
      * Search for points within a radius r of a point

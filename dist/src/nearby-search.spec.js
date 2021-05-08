@@ -1,5 +1,6 @@
 import { Hypothesis, Explanation } from 'atypical';
-import haversine from "haversine-distance";
+import haversine from "haversine";
+import geohash from 'ngeohash';
 import { NearbySearch } from './nearby-search.js';
 import { radiusGenerator, randomPoint } from './test-utils/points.js';
 const randomCasesAndMetrics = function* () {
@@ -80,8 +81,11 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
                 description: 'entry stored in non-neighbour geohash of seed-point',
                 data: {
                     mismatch: stored,
+                    mismatchDecoded: geohash.decode(stored),
                     seedNeighbours: [...seedNeighbours],
-                    storedHashes: [...storageHashes]
+                    storedHashes: [...storageHashes],
+                    decodedSeedNeighbours: [...seedNeighbours].map(str => geohash.decode(str)),
+                    decodedStoredHashes: [...storageHashes].map(str => geohash.decode(str))
                 }
             });
         }
@@ -91,7 +95,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     const actual = search.candidatePoints(seed);
     if (actual.length !== entries.length) {
         const distances = entries
-            .map((entry) => Math.floor(haversine(entry.location, seed.location)))
+            .map((entry) => Math.floor(haversine(entry.location, seed.location, { unit: 'meter' })))
             .sort();
         return new Explanation({
             description: 'mismatch between returned candidates and provided',

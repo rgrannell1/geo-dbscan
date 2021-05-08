@@ -2,7 +2,7 @@
 import { NearbySearchOpts, Location } from "./types"
 import geohash from 'ngeohash'
 
-import haversine from "haversine-distance"
+import haversine from "haversine"
 
 /**
  * the max area bound, by size. Index n corresponds to geohash length n + 1. The value
@@ -144,7 +144,7 @@ export class NearbySearch <T> {
    * @returns the distance between two points, in meters
    */
   distance (location: Location, point: T) {
-    return haversine(location, this.getLocation(point))
+    return haversine(location, this.getLocation(point), {unit: 'meter'})
   }
 
   /**

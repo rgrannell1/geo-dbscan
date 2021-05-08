@@ -17,8 +17,7 @@
     "perf": "npm run perf:clean; npm run perf:measure; npm run perf:show"
   },
   "dependencies": {
-    "geo-nearby": "^2.0.1",
-    "haversine-distance": "^1.2.1",
+    "haversine": "^1.1.1",
     "ngeohash": "^0.6.3"
   },
   "devDependencies": {

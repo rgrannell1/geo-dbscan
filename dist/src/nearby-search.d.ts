@@ -57,7 +57,7 @@ export declare class NearbySearch<T> {
      *
      * @returns the distance between two points, in meters
      */
-    distance(location: Location, point: T): number;
+    distance(location: Location, point: T): any;
     /**
      * Search for points within a radius r of a point
      *

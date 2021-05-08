@@ -1,3 +1,3 @@
 
-declare module 'geo-nearby'
 declare module 'ngeohash'
+declare module 'haversine'

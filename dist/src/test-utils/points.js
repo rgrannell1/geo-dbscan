@@ -1,4 +1,4 @@
-import haversine from "haversine-distance";
+import haversine from "haversine";
 export const randomPoint = () => {
     return {
         location: {
@@ -17,7 +17,7 @@ export const radiusGenerator = {
     inside(point, radius) {
         let candidate = randomPoint();
         while (true) {
-            const currentDistance = haversine(candidate.location, point.location);
+            const currentDistance = haversine(candidate.location, point.location, { unit: 'meter' });
             const offsetLngDegree = Math.floor(Math.random() * 10);
             const offsetLatDegree = Math.floor(Math.random() * 10);
             const offsetLngCoeff = Math.random() * 10;
@@ -32,11 +32,14 @@ export const radiusGenerator = {
                     latitude: candidate.location.latitude + (opLat * offsetLat)
                 }
             };
-            const newDistance = haversine(newCandidate.location, point.location);
+            const newDistance = haversine(newCandidate.location, point.location, { unit: 'meter' });
             if (currentDistance > newDistance) {
                 candidate = newCandidate;
             }
             if (newDistance < radius) {
+                console.log(candidate, point);
+                console.log(newDistance, 'm away');
+                console.log('++++++++++++++++++');
                 return candidate;
             }
         }

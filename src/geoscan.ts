@@ -1,5 +1,5 @@
 
-import haversine from 'haversine-distance'
+import haversine from 'haversine'
 import { NearbySearch } from './nearby-search.js'
 
 import {
@@ -35,7 +35,7 @@ export class GeoDBScan <T> {
    *   `epsilon` km of another point
    */
   withinDistance (location0: Location, location1: Location) {
-    return haversine(location0, location1) < (this.epsilon * 1000) // km distance
+    return haversine(location0, location1, { unit: 'meter' }) < (this.epsilon * 1000) // km distance
   }
 
   /**
