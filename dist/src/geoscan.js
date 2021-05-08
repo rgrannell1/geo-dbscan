@@ -27,7 +27,6 @@ export class GeoDBScan {
      * @param point
      */
     regionQuery(geo, data, point) {
-        console.log(geo.search(point));
         return geo.search(point);
     }
     /**

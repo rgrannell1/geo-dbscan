@@ -73,7 +73,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     const actual = search.candidatePoints(seed);
     if (actual.length !== entries.length) {
         const distances = entries
-            .map((entry) => haversine(entry.location, seed.location))
+            .map((entry) => Math.floor(haversine(entry.location, seed.location)))
             .sort();
         return new Explanation({
             description: 'mismatch between returned candidates and provided',

@@ -94,7 +94,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
 
     if (actual.length !== entries.length) {
       const distances = entries
-        .map((entry: any) => haversine(entry.location, seed.location))
+        .map((entry: any) => Math.floor(haversine(entry.location, seed.location)))
         .sort()
 
       return new Explanation({
