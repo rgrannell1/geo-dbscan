@@ -23,6 +23,13 @@ const areas = [
   0.1149
 ]
 
+/**
+ * Find nearby points in a dataset, as fast as possible. Use geohashes to partition the space, and search
+ * the nine eligible geohash areas that might contain a candidate point. The geohash precision is chosen to match up
+ * as larger than the provided search radius, minimising the search-area.
+ *
+ * Perform a haversine distance search for points in this grid; return points within radius r of the provided point.
+ */
 export class NearbySearch <T> {
   static areas = areas
   radius: number

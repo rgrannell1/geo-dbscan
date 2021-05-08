@@ -1,3 +1,4 @@
+import { NearbySearch } from './nearby-search.js';
 import { Location, GeoDBScanOpts, GrowClusterOpts, ClusterData } from './types';
 /**
  *
@@ -24,7 +25,7 @@ export declare class GeoDBScan<T> {
      *
      * @param point
      */
-    regionQuery(geo: any, data: T[], point: T): number[];
+    regionQuery(geo: any, data: T[], point: T): any;
     /**
      * Index geolocation data
      *
@@ -32,7 +33,7 @@ export declare class GeoDBScan<T> {
      *
      * @returns a Geo object
      */
-    asGeo(data: T[]): any;
+    asGeo(data: T[]): NearbySearch<T>;
     /**
      * Grow a new cluster from the provided seed-point.
      */

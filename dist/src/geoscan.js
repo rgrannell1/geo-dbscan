@@ -1,5 +1,5 @@
 import haversine from 'haversine-distance';
-import Geo from 'geo-nearby';
+import { NearbySearch } from './nearby-search.js';
 /**
  *
  */
@@ -27,13 +27,8 @@ export class GeoDBScan {
      * @param point
      */
     regionQuery(geo, data, point) {
-        const pointLocation = this.getLocation(point);
-        const nearby = geo.nearBy(pointLocation.latitude, pointLocation.longitude, this.epsilon * 1_000);
-        const neighbours = [];
-        for (const { i } of nearby) {
-            neighbours.push(i);
-        }
-        return neighbours;
+        console.log(geo.search(point));
+        return geo.search(point);
     }
     /**
      * Index geolocation data
@@ -43,13 +38,8 @@ export class GeoDBScan {
      * @returns a Geo object
      */
     asGeo(data) {
-        const indexable = [];
-        for (let idx = 0; idx < data.length; ++idx) {
-            const { latitude, longitude } = this.getLocation(data[idx]);
-            indexable.push([latitude, longitude, idx]);
-        }
-        return new Geo(Geo.createCompactSet(indexable), {
-            sorted: true
+        return new NearbySearch({
+            data, getLocation: this.getLocation, radius: this.epsilon
         });
     }
     /**

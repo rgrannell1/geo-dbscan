@@ -98,7 +98,7 @@ The bottleneck in DBSCAN is the search for points within a radius `r` of a selec
 
 ## Benchmarking
 
-I benchmarked geo-dbscan against real-world location-data to gauge performance.
+I benchmarked geo-dbscan against real-world location-data to gauge performance. The existing "fast" algorithms I found took
 
 ```
 1: took 0 seconds
@@ -113,6 +113,8 @@ I benchmarked geo-dbscan against real-world location-data to gauge performance.
 9,001: took 160 seconds
 10,001: took 245 seconds
 ```
+
+mine took less than a second
 
 ## API
 

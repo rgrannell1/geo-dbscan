@@ -90,20 +90,6 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     }
   })
   .always((seed, entries, search) => {
-    const geohashes = Object.keys(search.hashes)
-
-    const expectedCount = geohashes.length >= 1 && geohashes.length <= 9
-
-    if (!expectedCount) {
-      return new Explanation({
-        description: 'mismatch in candidate length from input length',
-        data: {
-          geohashCount: geohashes.length
-        }
-      })
-    }
-  })
-  .always((seed, entries, search) => {
     const actual = search.candidatePoints(seed)
 
     if (actual.length !== entries.length) {
