@@ -29,7 +29,7 @@ const benchmarkGeoScan = async () => {
     scan.fit(dataset)
     const end = process.hrtime.bigint()
 
-    console.log(`${size}: took ${(end - start) / 1_000_000_000n} seconds`)
+    console.log(`${size}: took ${(end - start) / 1_000_000n} milliseconds`)
   }
 }
 

@@ -22,7 +22,7 @@ const benchmarkGeoScan = async () => {
         const start = process.hrtime.bigint();
         scan.fit(dataset);
         const end = process.hrtime.bigint();
-        console.log(`${size}: took ${(end - start) / 1000000000n} seconds`);
+        console.log(`${size}: took ${(end - start) / 1000000n} milliseconds`);
     }
 };
 benchmarkGeoScan().catch(err => {

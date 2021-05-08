@@ -60,7 +60,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
 
       for (let idx = 0; idx < Math.floor(Math.random() * 100); ++idx) {
         const neighbour = radiusGenerator.inside(seed, radius)
-        entries.push(seed) /// TODO
+        entries.push(neighbour)
       }
 
       const search = new NearbySearch({
