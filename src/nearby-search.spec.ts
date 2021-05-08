@@ -51,7 +51,6 @@ const noErrorSearchHypothesis = new Hypothesis({ description: 'finds minimum geo
 const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifies nearby points and excludes distance ones' })
   .cases(function * () {
     while (true) {
-
       // -- the centre point
       const seed = randomPoint()
       const radius = Math.floor(Math.random() * 10_000)
@@ -136,7 +135,54 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     }
   })
 
+const distantSearchHypothesis = new Hypothesis({ description: 'correctly identifies nearby points and excludes distance ones' })
+  .cases(function* () {
+    while (true) {
+      // -- the centre point
+      const seed = randomPoint()
+      const radius = Math.floor(Math.random() * 10_000)
+
+      const entries = []
+
+      for (let idx = 0; idx < Math.floor(Math.random() * 100); ++idx) {
+        const neighbour = radiusGenerator.outside(seed, radius)
+        entries.push(neighbour)
+      }
+
+      const search = new NearbySearch({
+        data: entries,
+        radius: radius,
+        getLocation(point: any) {
+          return point.location
+        }
+      })
+
+      yield [seed, entries, search]
+    }
+  })
+  .always((seed, entries, search) => {
+    const actual = search.candidatePoints(seed)
+
+    if (actual.length !== 0) {
+      const distances = entries
+        .map((entry: any) => Math.floor(haversine(entry.location, seed.location, { unit: 'meter' })))
+        .sort()
+
+      return new Explanation({
+        description: 'matches were present where there should be none',
+        data: {
+          actualLength: actual.length,
+          expectedLength: entries.length,
+          distances,
+          radius: search.radius,
+          hashes: search.hashes
+        }
+      })
+    }
+  })
+
 export default {
   noErrorSearchHypothesis,
-  nearbySearchHypothesis
+  nearbySearchHypothesis,
+  distantSearchHypothesis
 }

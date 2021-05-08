@@ -32,10 +32,10 @@ export class GeoDBScan <T> {
    * @param location1 a longitude-latitude-object
    *
    * @returns a boolean indicative whether a point is within
-   *   `epsilon` km of another point
+   *   `epsilon` meters of another point
    */
   withinDistance (location0: Location, location1: Location) {
-    return haversine(location0, location1, { unit: 'meter' }) < (this.epsilon * 1000) // km distance
+    return haversine(location0, location1, { unit: 'meter' }) < this.epsilon
   }
 
   /**

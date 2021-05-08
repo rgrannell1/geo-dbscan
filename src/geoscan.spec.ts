@@ -47,7 +47,7 @@ const fitHypothesis = new Hypothesis({
     getLocation(datum:any) {
       return datum.location
     },
-    epsilon: 10,
+    epsilon: 10_000,
     minPoints
   })
 

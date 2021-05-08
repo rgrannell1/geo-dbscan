@@ -13,7 +13,7 @@ const benchmarkGeoScan = async () => {
     getLocation(datum: any) {
       return { latitude: datum.y, longitude: datum.x }
     },
-    epsilon: 10,
+    epsilon: 1000,
     minPoints: 3
   })
 
