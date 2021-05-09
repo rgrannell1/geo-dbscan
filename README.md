@@ -1,7 +1,7 @@
 
 # geo-dbscan 🗺️
 
-Cluster geographical location-data using DBSCAN. Inspired by [dbscan_gps](https://www.npmjs.com/package/dbscan_gps)
+Very fast geolocation clustering.
 
 [![CI](https://github.com/rgrannell1/geo-dbscan/actions/workflows/ci.yaml/badge.svg)](https://github.com/rgrannell1/geo-dbscan/actions/workflows/ci.yaml)
 
@@ -73,7 +73,7 @@ const result = scan.fit(data)
 
 ## Stability
 
-> 1, Experimental - This project might die, it's undertested and underdocumented, and redesigns and breaking changes are likely
+> 2, Evolving - This project is healthy, but might lack testing or documentation or it is prone to breaking changes
 
 ## Motivation
 
