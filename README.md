@@ -77,9 +77,9 @@ const result = scan.fit(data)
 
 ## Motivation
 
-Node.js has a few DBScan libraries, but none of them were quite right for me. `dbscan_gps` is good but it has a weird callback interface (it's syncronous!) and error-handling, and the performance is horrible when `n > 5,000`. In comparison, geo-dbscan is:
+Node.js has a few DBScan libraries, but none I found worked well. `dbscan_gps` is good but it has a weird callback interface (it's syncronous!) and error-handling, and the performance is horrible when `n > 5,000`. In comparison, geo-dbscan is:
 
-- **faster**: `geo-dbscan` uses spatial indexing to speed up neighbour searches
+- **fast**: `geo-dbscan` uses spatial indexing to speed up neighbour searches
 - **flexible**: `geo-dbscan` lets you provide an accessor to retrieve longitude-latitude coordinates so you don't need to alter your data-model
 
 ## Background
@@ -87,13 +87,13 @@ Node.js has a few DBScan libraries, but none of them were quite right for me. `d
 [DBSCAN](https://en.wikipedia.org/wiki/DBSCAN) is a density-based clustering algorithm that can be used to cluster geolocations based on density, with points in low-density areas being treated as noise. `geo-dbscan` uses two tuning parameters:
 
 - `epsilon`: how far can a point be from a cluster to be included in said cluster? Larger values of epsilon will lead to larger clusters that include more "noise" points, smaller values will produce fewer cluster but they'll be denser. Measured in `km`
-- `minPoints`: the minimum points to form a cluster
+- `minPoints`: the minimum points to form a dense region
 
 These values have to be chosen with knowledge of the data-set and application.
 
 The bottleneck in DBSCAN is the search for points within a radius `r` of a selected point `p`. This can be accelerated by using a data-structure suitable for these searches. `geo-dbscan` uses a combination of techniques:
 
-- points are added to a [geohash](https://en.wikipedia.org/wiki/Geohash#Algorithm_and_example) prefix tree so points within a relatively small candidate area can be quickly selected.
+- points are stored along with their [geohash](https://en.wikipedia.org/wiki/Geohash#Algorithm_and_example), and only points in nearby geohashes are examined 
 - the haversine distance for each point to `p` in this area is computed; if it's within the required radius, it's returned.
 
 ## Benchmarking
@@ -114,7 +114,7 @@ I benchmarked geo-dbscan against real-world location-data to gauge performance. 
 10,001: took 245 seconds
 ```
 
-mine took less than a second
+mine took 100ms for this data-set
 
 ## API
 
