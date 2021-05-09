@@ -112,7 +112,7 @@ I benchmarked geo-dbscan against real-world location-data to gauge performance. 
 10,001: took 245 seconds
 ```
 
-mine took 100ms for this data-set
+mine took **100ms** for this data-set
 
 ## API
 
