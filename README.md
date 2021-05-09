@@ -64,7 +64,7 @@ const scan = new GeoDBScan({
   getLocation (datum: any) {
     return datum.location
   },
-  epsilon: 10,
+  epsilon: 10_000,
   minPoints: 3
 })
 
@@ -124,7 +124,7 @@ Construct a geodbscan object that can be used to cluster geographical data.
 
 - `opts.getLocation`: a function that retrieves an object containing longitude, latitude data from a data-entry provided
 - `opts.minPoints`: the minimum number of points in a cluster
-- `opts.epsilon`: the local radius of a cluster, in kilometers
+- `opts.epsilon`: the local radius of a cluster, in meters
 
 ### `geoScan.fit(data)`
 
