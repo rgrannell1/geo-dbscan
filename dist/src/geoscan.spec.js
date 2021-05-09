@@ -41,7 +41,7 @@ const fitHypothesis = new Hypothesis({
         getLocation(datum) {
             return datum.location;
         },
-        epsilon: 10,
+        epsilon: 10_000,
         minPoints
     });
     const result = scan.fit(data);
@@ -103,3 +103,4 @@ export default {
     //fitHypothesis,
     regionQueryHypothesis
 };
+//# sourceMappingURL=geoscan.spec.js.map

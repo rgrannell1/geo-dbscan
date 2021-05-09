@@ -4,7 +4,6 @@ import { Location, GeoDBScanOpts, GrowClusterOpts, ClusterData } from './types';
  *
  */
 export declare class GeoDBScan<T> {
-    data: T[];
     getLocation: (point: T) => Location;
     epsilon: number;
     minPoints: number;
@@ -17,7 +16,7 @@ export declare class GeoDBScan<T> {
      * @param location1 a longitude-latitude-object
      *
      * @returns a boolean indicative whether a point is within
-     *   `epsilon` km of another point
+     *   `epsilon` meters of another point
      */
     withinDistance(location0: Location, location1: Location): boolean;
     /**

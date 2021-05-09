@@ -10,7 +10,7 @@ const benchmarkGeoScan = async () => {
         getLocation(datum) {
             return { latitude: datum.y, longitude: datum.x };
         },
-        epsilon: 10,
+        epsilon: 1000,
         minPoints: 3
     });
     for (let size = 1; size < locations.length; size += 1000) {
@@ -28,3 +28,4 @@ const benchmarkGeoScan = async () => {
 benchmarkGeoScan().catch(err => {
     throw err;
 });
+//# sourceMappingURL=geoscan.benchmark.js.map

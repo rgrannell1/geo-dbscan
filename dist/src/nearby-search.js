@@ -132,3 +132,4 @@ export class NearbySearch {
     }
 }
 NearbySearch.areas = areas;
+//# sourceMappingURL=nearby-search.js.map

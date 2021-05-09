@@ -1,8 +1,11 @@
 
+import * as fs from 'fs'
+
 import { Theory } from 'atypical'
 
 import geoscanHypotheses from '../src/geoscan.spec.js'
 import noErrorSearchHypotheses from '../src/nearby-search.spec.js'
+import salesHypothesis from './sales.js'
 
 const theory = new Theory({
   description: 'all geoscan hypotheses hold'
@@ -10,6 +13,7 @@ const theory = new Theory({
 
 theory
   .expectAll({
+    ...salesHypothesis,
     ...noErrorSearchHypotheses
   })
   .test({

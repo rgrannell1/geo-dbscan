@@ -153,3 +153,4 @@ export default {
     nearbySearchHypothesis,
     distantSearchHypothesis
 };
+//# sourceMappingURL=nearby-search.spec.js.map

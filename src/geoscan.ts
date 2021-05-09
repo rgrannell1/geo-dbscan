@@ -9,11 +9,12 @@ import {
   ClusterData
 } from './types'
 
+const GEOSCAN_ID = Symbol('geoscan-id')
+
 /**
  *
  */
 export class GeoDBScan <T> {
-  data: T[]
   getLocation: (point: T) => Location
   epsilon: number
   minPoints: number
@@ -44,7 +45,7 @@ export class GeoDBScan <T> {
    * @param point
    */
   regionQuery (geo: any, data: T[], point: T) {
-    return geo.search(point)
+    return geo.search(point).map((point: T) => (point as any)[GEOSCAN_ID])
   }
 
   /**
@@ -118,6 +119,7 @@ export class GeoDBScan <T> {
     let clusterId = 0
     const labels = []
     for (let idx = 0; idx < data.length; ++idx) {
+      (data[idx] as any)[GEOSCAN_ID] = idx
       labels.push(0)
     }
 
@@ -128,6 +130,7 @@ export class GeoDBScan <T> {
       }
 
       const neighbours = this.regionQuery(this.geo, data, data[idx])
+
       if (neighbours.length < this.minPoints) {
         labels[idx] = -1
       } else {
@@ -141,6 +144,8 @@ export class GeoDBScan <T> {
         })
       }
     }
+
+    // -- final data processing.
 
     const noiseCount = labels.filter(data => data === -1).length
     const clusteredCount = labels.filter(data => data !== -1).length

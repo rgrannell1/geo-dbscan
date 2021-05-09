@@ -51,3 +51,4 @@ export const radiusGenerator = {
         }
     }
 };
+//# sourceMappingURL=points.js.map

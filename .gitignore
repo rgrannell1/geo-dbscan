@@ -4,3 +4,4 @@ coverage/
 isolate-*
 flamegraph.html
 data/
+*.map

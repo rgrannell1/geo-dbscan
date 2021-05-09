@@ -1,5 +1,6 @@
 import haversine from 'haversine';
 import { NearbySearch } from './nearby-search.js';
+const GEOSCAN_ID = Symbol('geoscan-id');
 /**
  *
  */
@@ -16,10 +17,10 @@ export class GeoDBScan {
      * @param location1 a longitude-latitude-object
      *
      * @returns a boolean indicative whether a point is within
-     *   `epsilon` km of another point
+     *   `epsilon` meters of another point
      */
     withinDistance(location0, location1) {
-        return haversine(location0, location1, { unit: 'meter' }) < (this.epsilon * 1000); // km distance
+        return haversine(location0, location1, { unit: 'meter' }) < this.epsilon;
     }
     /**
      * Find all points idxs within `eps`km of a point. O(n), needs spatial indexing
@@ -27,7 +28,7 @@ export class GeoDBScan {
      * @param point
      */
     regionQuery(geo, data, point) {
-        return geo.search(point);
+        return geo.search(point).map((point) => point[GEOSCAN_ID]);
     }
     /**
      * Index geolocation data
@@ -91,6 +92,7 @@ export class GeoDBScan {
         let clusterId = 0;
         const labels = [];
         for (let idx = 0; idx < data.length; ++idx) {
+            data[idx][GEOSCAN_ID] = idx;
             labels.push(0);
         }
         for (let idx = 0; idx < data.length; ++idx) {
@@ -113,6 +115,7 @@ export class GeoDBScan {
                 });
             }
         }
+        // -- final data processing.
         const noiseCount = labels.filter(data => data === -1).length;
         const clusteredCount = labels.filter(data => data !== -1).length;
         const clusters = {};
@@ -137,3 +140,4 @@ export class GeoDBScan {
         };
     }
 }
+//# sourceMappingURL=geoscan.js.map
