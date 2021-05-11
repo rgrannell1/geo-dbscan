@@ -1,11 +1,9 @@
 
 # geo-dbscan 🗺️
 
-Cluster geographical location-data using DBSCAN. Inspired by [dbscan_gps](https://www.npmjs.com/package/dbscan_gps)
+Very fast geolocation clustering using DBSCAN.
 
 [![CI](https://github.com/rgrannell1/geo-dbscan/actions/workflows/ci.yaml/badge.svg)](https://github.com/rgrannell1/geo-dbscan/actions/workflows/ci.yaml)
-
-Cluster geographical location-data.
 
 ```ts
 const data = [
@@ -64,7 +62,7 @@ const scan = new GeoDBScan({
   getLocation (datum: any) {
     return datum.location
   },
-  epsilon: 10,
+  epsilon: 10_000,
   minPoints: 3
 })
 
@@ -73,13 +71,13 @@ const result = scan.fit(data)
 
 ## Stability
 
-> 1, Experimental - This project might die, it's undertested and underdocumented, and redesigns and breaking changes are likely
+> 2, Evolving - This project is healthy, but might lack testing or documentation or it is prone to breaking changes
 
 ## Motivation
 
-Node.js has a few DBScan libraries, but none of them were quite right for me. `dbscan_gps` is good but it has a weird callback interface (it's syncronous!) and error-handling, and the performance is horrible when `n > 5,000`. In comparison, geo-dbscan is:
+Node.js has a few DBScan libraries, but none I found worked well. `dbscan_gps` is good but it has a weird callback interface (it's syncronous!) and error-handling, and the performance is horrible when `n > 5,000`. In comparison, geo-dbscan is:
 
-- **faster**: `geo-dbscan` uses spatial indexing to speed up neighbour searches
+- **fast**: `geo-dbscan` uses spatial indexing to speed up neighbour searches
 - **flexible**: `geo-dbscan` lets you provide an accessor to retrieve longitude-latitude coordinates so you don't need to alter your data-model
 
 ## Background
@@ -87,13 +85,13 @@ Node.js has a few DBScan libraries, but none of them were quite right for me. `d
 [DBSCAN](https://en.wikipedia.org/wiki/DBSCAN) is a density-based clustering algorithm that can be used to cluster geolocations based on density, with points in low-density areas being treated as noise. `geo-dbscan` uses two tuning parameters:
 
 - `epsilon`: how far can a point be from a cluster to be included in said cluster? Larger values of epsilon will lead to larger clusters that include more "noise" points, smaller values will produce fewer cluster but they'll be denser. Measured in `km`
-- `minPoints`: the minimum points to form a cluster
+- `minPoints`: the minimum points to form a dense region
 
 These values have to be chosen with knowledge of the data-set and application.
 
 The bottleneck in DBSCAN is the search for points within a radius `r` of a selected point `p`. This can be accelerated by using a data-structure suitable for these searches. `geo-dbscan` uses a combination of techniques:
 
-- points are added to a [geohash](https://en.wikipedia.org/wiki/Geohash#Algorithm_and_example) prefix tree so points within a relatively small candidate area can be quickly selected.
+- points are stored along with their [geohash](https://en.wikipedia.org/wiki/Geohash#Algorithm_and_example), and only points in nearby geohashes are examined 
 - the haversine distance for each point to `p` in this area is computed; if it's within the required radius, it's returned.
 
 ## Benchmarking
@@ -114,7 +112,7 @@ I benchmarked geo-dbscan against real-world location-data to gauge performance. 
 10,001: took 245 seconds
 ```
 
-mine took less than a second
+mine took **100ms** for this data-set
 
 ## API
 
@@ -124,7 +122,7 @@ Construct a geodbscan object that can be used to cluster geographical data.
 
 - `opts.getLocation`: a function that retrieves an object containing longitude, latitude data from a data-entry provided
 - `opts.minPoints`: the minimum number of points in a cluster
-- `opts.epsilon`: the local radius of a cluster, in kilometers
+- `opts.epsilon`: the local radius of a cluster, in meters
 
 ### `geoScan.fit(data)`
 
