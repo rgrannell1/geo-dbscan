@@ -1,4 +1,5 @@
 import { Theory } from 'atypical';
+import geoscanHypotheses from '../src/geoscan.spec.js';
 import noErrorSearchHypotheses from '../src/nearby-search.spec.js';
 import salesHypothesis from './sales.js';
 const theory = new Theory({
@@ -7,7 +8,8 @@ const theory = new Theory({
 theory
     .expectAll({
     ...salesHypothesis,
-    ...noErrorSearchHypotheses
+    ...noErrorSearchHypotheses,
+    ...geoscanHypotheses
 })
     .test({
     seconds: 30

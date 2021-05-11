@@ -3,10 +3,6 @@ import * as fs from 'fs'
 import { GeoDBScan } from "../src/geoscan.js"
 import { Hypothesis, Explanation } from 'atypical'
 
-
-
-
-
 const salesHypothesis = new Hypothesis({
   description: 'sales data is clustered as expected'
 })

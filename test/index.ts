@@ -14,7 +14,8 @@ const theory = new Theory({
 theory
   .expectAll({
     ...salesHypothesis,
-    ...noErrorSearchHypotheses
+    ...noErrorSearchHypotheses,
+    ...geoscanHypotheses
   })
   .test({
     seconds: 30

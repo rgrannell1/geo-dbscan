@@ -78,7 +78,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     for (const stored of storageHashes) {
         if (!seedNeighbours.has(stored)) {
             return new Explanation({
-                description: 'entry stored in non-neighbour geohash of seed-point',
+                description: 'entry stored in non-neighbour geohash of seed-point. May be due to bad definition of "nearby"',
                 data: {
                     mismatch: stored,
                     mismatchDecoded: geohash.decode(stored),
@@ -109,7 +109,7 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
         });
     }
 });
-const distantSearchHypothesis = new Hypothesis({ description: 'correctly identifies nearby points and excludes distance ones' })
+const distantSearchHypothesis = new Hypothesis({ description: 'correctly identifies nearby points' })
     .cases(function* () {
     while (true) {
         // -- the centre point

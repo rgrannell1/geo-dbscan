@@ -16,8 +16,8 @@ export const radiusGenerator = {
      */
     inside(point, radius) {
         let candidate = randomPoint();
+        let distance = Infinity;
         while (true) {
-            const currentDistance = haversine(candidate.location, point.location, { unit: 'meter' });
             const offsetLngDegree = Math.floor(Math.random() * 10);
             const offsetLatDegree = Math.floor(Math.random() * 10);
             const offsetLngCoeff = Math.random() * 10;
@@ -33,11 +33,20 @@ export const radiusGenerator = {
                 }
             };
             const newDistance = haversine(newCandidate.location, point.location, { unit: 'meter' });
-            if (currentDistance > newDistance) {
+            if (distance > newDistance) {
                 candidate = newCandidate;
+                distance = newDistance;
             }
             if (newDistance < radius) {
-                return candidate;
+                // -- for some reason, this glitches sometimes.
+                let closeLat = Math.round(point.location.latitude) === Math.round(candidate.location.latitude);
+                let closeLng = Math.round(point.location.longitude) === Math.round(candidate.location.longitude);
+                if (closeLat && closeLng) {
+                    return candidate;
+                }
+                else {
+                    return point;
+                }
             }
         }
     },
