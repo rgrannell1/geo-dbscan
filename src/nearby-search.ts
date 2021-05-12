@@ -47,7 +47,7 @@ export class NearbySearch <T> {
    * @param opts
    */
   constructor (opts: NearbySearchOpts<T>) {
-    const [precision, area] = this.radiusToPrecisionBounds(opts.radius)
+    const precision = this.radiusToPrecisionBounds(opts.radius)
     this.radius = opts.radius
     this.precision = precision
     this.getLocation = opts.getLocation
@@ -125,14 +125,40 @@ export class NearbySearch <T> {
    * @returns number a number between 1 and ...
    */
   radiusToPrecisionBounds (radius: number) {
-    for (let idx = 0; idx < areas.length; idx++) {
-      const tooSmall = areas[idx] < radius
-      if (tooSmall) {
-        return [idx, areas[idx - 1]]
+    const target = geohash.encode(37.8324, 112.5584)
+
+    for (let idx = target.length - 1; idx > 0; --idx) {
+      const prefix = target.slice(0, idx)
+      const [minLat, minLon, maxLat, maxLon] = geohash.decode_bbox(prefix)
+
+      const lonDiff = haversine({
+        longitude: minLon,
+        latitude: 0
+      }, {
+        longitude: maxLon,
+        latitude: 0
+      }, { unit: 'meter' })
+
+      const latDiff = haversine({
+        longitude: 0,
+        latitude: minLat
+      }, {
+        longitude: 0,
+        latitude: maxLat
+      }, { unit: 'meter' })
+
+      if (radius < lonDiff && radius < latDiff) {
+        console.log({
+          prefix,
+          diffs: [lonDiff, latDiff],
+          radius,
+          idx
+        })
+        return idx
       }
     }
 
-    return [1, areas[0]]
+    throw new Error('never reached.')
   }
 
   /**

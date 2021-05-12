@@ -48,7 +48,7 @@ export declare class NearbySearch<T> {
      *
      * @returns number a number between 1 and ...
      */
-    radiusToPrecisionBounds(radius: number): number[];
+    radiusToPrecisionBounds(radius: number): number;
     /**
      * Compute the haversine distance between two points
      *

@@ -1,4 +1,5 @@
 
+import plot from 'node-scatterplot'
 import { Hypothesis, Explanation } from 'atypical'
 import haversine from "haversine"
 import geohash from 'ngeohash'
@@ -9,6 +10,27 @@ import {
   radiusGenerator,
   randomPoint
 } from './test-utils/points.js'
+
+const drawMap = (example: any, seed: any, search: NearbySearch<any>) => {
+  const set: number[][] = [
+    [
+      example.location.longitude,
+      example.location.latitude
+    ],
+    [
+      seed.location.longitude,
+      seed.location.latitude
+    ]
+  ]
+
+  for (const {entries} of Object.values(search.hashes)) {
+    for (const entry of entries) {
+      set.push([entry.location.longitude, entry.location.latitude])
+    }
+  }
+
+  plot(set)
+}
 
 const randomCasesAndMetrics = function* () {
   while (true) {
@@ -99,11 +121,24 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     for (const stored of storageHashes) {
       if (!seedNeighbours.has(stored)) {
 
+        const [example] = search.hashes[stored].entries
+
+        drawMap(example, seed, search)
+
         return new Explanation({
           description: 'entry stored in non-neighbour geohash of seed-point. May be due to bad definition of "nearby"',
           data: {
-            mismatch: stored,
-            mismatchDecoded: geohash.decode(stored),
+            radius: search.radius,
+            seed: {
+              seed,
+              hash: geohash.encode(seed.location.latitude, seed.location.longitude, search.precision)
+            },
+            mismatch: {
+              stored,
+              example,
+              distance: haversine(seed.location, example.location, { unit: 'meter' }),
+              bounds: geohash.decode_bbox_int(stored)
+            },
             seedNeighbours: [...seedNeighbours],
             storedHashes: [...storageHashes],
             decodedSeedNeighbours: [...seedNeighbours].map(str => geohash.decode(str)),
@@ -140,7 +175,7 @@ const distantSearchHypothesis = new Hypothesis({ description: 'correctly identif
     while (true) {
       // -- the centre point
       const seed = randomPoint()
-      const radius = Math.floor(Math.random() * 10_000)
+      const radius = Math.floor(Math.random() * 10_000) + 100
 
       const entries = []
 

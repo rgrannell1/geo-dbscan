@@ -71,7 +71,7 @@ export const radiusGenerator = {
     while (true) {
       const candidate = randomPoint()
 
-      const distance = haversine (candidate.location, point.location)
+      const distance = haversine(candidate.location, point.location)
 
       if (distance > radius) {
         return candidate

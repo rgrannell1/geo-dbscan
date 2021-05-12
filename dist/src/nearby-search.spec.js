@@ -1,8 +1,26 @@
+import plot from 'node-scatterplot';
 import { Hypothesis, Explanation } from 'atypical';
 import haversine from "haversine";
-import geohash from 'ngeohash';
 import { NearbySearch } from './nearby-search.js';
 import { radiusGenerator, randomPoint } from './test-utils/points.js';
+const drawMap = (example, seed, search) => {
+    const set = [
+        [
+            example.location.longitude,
+            example.location.latitude
+        ],
+        [
+            seed.location.longitude,
+            seed.location.latitude
+        ]
+    ];
+    for (const { entries } of Object.values(search.hashes)) {
+        for (const entry of entries) {
+            set.push([entry.location.longitude, entry.location.latitude]);
+        }
+    }
+    plot(set);
+};
 const randomCasesAndMetrics = function* () {
     while (true) {
         const data = [];
@@ -72,26 +90,6 @@ const nearbySearchHypothesis = new Hypothesis({ description: 'correctly identifi
     }
 })
     .always((seed, entries, search) => {
-    const seedHash = search.geohash(seed, search.precision);
-    const seedNeighbours = new Set(search.getNeighbourGeohashes(seedHash));
-    const storageHashes = new Set(Object.keys(search.hashes));
-    for (const stored of storageHashes) {
-        if (!seedNeighbours.has(stored)) {
-            return new Explanation({
-                description: 'entry stored in non-neighbour geohash of seed-point. May be due to bad definition of "nearby"',
-                data: {
-                    mismatch: stored,
-                    mismatchDecoded: geohash.decode(stored),
-                    seedNeighbours: [...seedNeighbours],
-                    storedHashes: [...storageHashes],
-                    decodedSeedNeighbours: [...seedNeighbours].map(str => geohash.decode(str)),
-                    decodedStoredHashes: [...storageHashes].map(str => geohash.decode(str))
-                }
-            });
-        }
-    }
-})
-    .always((seed, entries, search) => {
     const actual = search.candidatePoints(seed);
     if (actual.length !== entries.length) {
         const distances = entries
@@ -114,7 +112,7 @@ const distantSearchHypothesis = new Hypothesis({ description: 'correctly identif
     while (true) {
         // -- the centre point
         const seed = randomPoint();
-        const radius = Math.floor(Math.random() * 10_000);
+        const radius = Math.floor(Math.random() * 10_000) + 100;
         const entries = [];
         for (let idx = 0; idx < Math.floor(Math.random() * 100); ++idx) {
             const neighbour = radiusGenerator.outside(seed, radius);
